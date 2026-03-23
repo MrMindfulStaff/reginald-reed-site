@@ -249,30 +249,186 @@ export default function Research() {
             </Accordion>
           </AnimatedSection>
 
-          {/* ── HOME BUYERS REVERSAL PROCESS ── */}
+          {/* ── HOUSE REED HOME BUYERS PROGRAM ── */}
           <AnimatedSection delay={0.1}>
             <Accordion
-              title="Home Buyers Reversal Process"
-              subtitle="Enabling bank-free homeownership for communities historically excluded from mortgage access."
+              title="The House Reed Home Buyers Program"
+              subtitle="A rent-to-own homeownership model in Milwaukee's 53206 — connecting workforce training, construction skills, and below-market home purchase into a single community wealth pipeline."
               badge="Wealth Building & Housing"
             >
-              <p className="text-silver leading-relaxed mb-6">
-                The Home Buyers Reversal Process reimagines the homeownership pipeline by inverting the traditional sequence of bank qualification, mortgage approval, and purchase.
-              </p>
-              <p className="text-silver leading-relaxed mb-6">
-                This research examines models where community members can access homeownership through alternative financing structures, cooperative ownership models, and asset-building mechanisms that don&apos;t require traditional bank relationships — directly addressing the wealth gap in communities like 53206.
-              </p>
-              <div className="grid md:grid-cols-3 gap-6">
+              {/* Key Metrics */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
                 {[
-                  { title: "Alternative Financing", text: "Structures that bypass traditional mortgage gatekeepers while maintaining legal protections for buyers." },
-                  { title: "Cooperative Ownership", text: "Community-based ownership models that build collective wealth rather than individual debt." },
-                  { title: "Asset-Building Pathways", text: "Mechanisms that convert existing economic activity into homeownership equity without bank relationships." },
-                ].map((item) => (
-                  <div key={item.title} className="border-l-2 border-gold/30 pl-5">
-                    <h4 className="text-ivory font-heading text-sm mb-2">{item.title}</h4>
-                    <p className="text-silver text-xs leading-relaxed">{item.text}</p>
+                  { label: "Price Point", value: "60%", desc: "of market value" },
+                  { label: "Target Geography", value: "53206", desc: "Milwaukee's north side" },
+                  { label: "Structure", value: "Rent-to-Own", desc: "trainee pathway" },
+                  { label: "City Recognition", value: "2021", desc: "WPR / Urban Milwaukee profile" },
+                ].map((m) => (
+                  <div key={m.label} className="text-center">
+                    <p className="text-silver text-[10px] uppercase tracking-wider mb-1">{m.label}</p>
+                    <p className="text-2xl font-heading text-gold">{m.value}</p>
+                    <p className="text-silver/60 text-xs">{m.desc}</p>
                   </div>
                 ))}
+              </div>
+
+              {/* Overview */}
+              <div className="mb-10">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-4">Overview</p>
+                <p className="text-silver text-sm leading-relaxed mb-4">
+                  The House Reed Home Buyers Program is a community homeownership initiative operated through <span className="text-ivory font-medium">House Reed Holdings</span> in Milwaukee&apos;s 53206 zip code — one of the most economically distressed neighborhoods in the United States.
+                </p>
+                <p className="text-silver text-sm leading-relaxed mb-4">
+                  The program acquires and rehabilitates blighted residential properties on Milwaukee&apos;s north side, then offers those homes to workforce training program graduates on a <span className="text-ivory font-medium">rent-to-own basis at 60% of market value</span>. This isn&apos;t a charity arrangement — it&apos;s a structured pathway from economic instability to asset ownership.
+                </p>
+                <p className="text-silver text-sm leading-relaxed">
+                  Training a person for employment is only half the equation. If they return to unstable housing, the economic mobility gains erode. The Home Buyers Program treats housing as infrastructure for workforce outcomes — not a separate social service.
+                </p>
+              </div>
+
+              {/* Pipeline */}
+              <div className="mb-10">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-2">Program Architecture</p>
+                <p className="text-silver text-sm mb-6">A four-stage pipeline where each stage produces an output that feeds the next.</p>
+                <div className="grid md:grid-cols-4 gap-px bg-gold/10 border border-gold/10">
+                  {[
+                    { num: "01", title: "Workforce Training", desc: "Participants enter through The Mindful Group's free CNA, construction, or trades programs. Zero tuition. Zero debt." },
+                    { num: "02", title: "Construction Skills", desc: "Trainees learn hands-on construction by rehabilitating the actual homes in the program. Work is real; stakes are real." },
+                    { num: "03", title: "Rent-to-Own Purchase", desc: "Rehabilitated homes offered to graduates at 60% of market value. Participants build equity in a home they helped restore." },
+                    { num: "04", title: "Community Anchoring", desc: "New homeowners remain in 53206. Property values stabilize. The cycle repeats with the next cohort." },
+                  ].map((step) => (
+                    <div key={step.num} className="bg-obsidian p-5">
+                      <p className="text-3xl font-heading text-gold/15 mb-2">{step.num}</p>
+                      <p className="text-gold text-xs font-semibold tracking-wide mb-2">{step.title}</p>
+                      <p className="text-silver text-xs leading-relaxed">{step.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Why 53206 */}
+              <div className="mb-10">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-4">Context — Why 53206</p>
+                <p className="text-silver text-sm leading-relaxed mb-4">
+                  Milwaukee&apos;s 53206 zip code has been documented as one of the most incarcerated zip codes in the United States — a neighborhood where decades of disinvestment, predatory lending, and policy neglect produced some of the highest rates of poverty, blight, and homeownership loss in any American city.
+                </p>
+                <p className="text-silver text-sm leading-relaxed">
+                  By keeping homes at 60% of market value, the program ensures that the people who rebuilt them can actually afford to own them — not as a temporary subsidy, but as a <span className="text-ivory font-medium">permanent structural discount</span> that reflects the community&apos;s own labor contribution to the home&apos;s value.
+                </p>
+              </div>
+
+              {/* Impact */}
+              <div className="mb-10">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-6">Documented Impact</p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {[
+                    { label: "Acquisition Strategy", value: "Blighted Properties", desc: "Targeting vacant and deteriorated properties that suppress neighborhood values and increase crime exposure." },
+                    { label: "Price Discount", value: "40% Below Market", desc: "Making homeownership accessible to workforce training graduates priced out of conventional markets." },
+                    { label: "Beneficiary Profile", value: "Training Graduates", desc: "People who built economic mobility through skills, not inherited wealth." },
+                    { label: "City Response", value: "Public Endorsement", desc: "Department of City Development issued a public statement of support, citing the program as a positive model." },
+                  ].map((card) => (
+                    <div key={card.label} className="border border-gold/10 p-5">
+                      <p className="text-silver/50 text-[10px] uppercase tracking-wider mb-1">{card.label}</p>
+                      <p className="text-ivory font-heading text-base mb-2">{card.value}</p>
+                      <p className="text-silver text-xs leading-relaxed">{card.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* City Endorsement */}
+              <div className="mb-10">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-4">Government Recognition</p>
+                <div className="border-l-2 border-gold/40 pl-6 py-4 bg-obsidian-light/50">
+                  <p className="text-gold/50 text-[10px] uppercase tracking-wider mb-3">City of Milwaukee — Department of City Development</p>
+                  <p className="text-ivory text-sm italic leading-relaxed mb-3">
+                    &ldquo;The Department of City Development welcomes new, innovative solutions from the community in increasing minority homeownership and addressing local housing challenges. Mr. Reed has a positive track record and the City looks forward to working together to build a stronger Milwaukee for all.&rdquo;
+                  </p>
+                  <p className="text-silver/50 text-xs">Wisconsin Public Radio / Urban Milwaukee · August 19, 2021</p>
+                </div>
+              </div>
+
+              {/* Design Logic Table */}
+              <div className="mb-10">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-4">The Structural Innovation</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-obsidian-light">
+                        <th className="text-left p-3 text-gold/70 uppercase tracking-wider font-medium border-b border-gold/20">Design Element</th>
+                        <th className="text-left p-3 text-silver/50 uppercase tracking-wider font-medium border-b border-gold/20">Conventional</th>
+                        <th className="text-left p-3 text-gold uppercase tracking-wider font-medium border-b border-gold/20">House Reed</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-sm">
+                      {[
+                        ["Who gets access", "Income-qualified from general population", "Workforce training graduates with demonstrated mobility"],
+                        ["Home preparation", "Contractor-built; residents not involved", "Trainees learn construction by rehabilitating the homes they'll purchase"],
+                        ["Pricing", "Market rate with expiring subsidy", "60% of market value — permanent structural discount"],
+                        ["Ownership pathway", "Rental, waitlist, or mortgage requirement", "Rent-to-own built into the model from day one"],
+                        ["Community impact", "Replace blight with units; hope residents stay", "Anchor trained workers as homeowners in their own neighborhood"],
+                        ["Economic multiplier", "Single transaction; value extracted", "Value recirculated — labor credited in purchase price"],
+                      ].map(([element, conventional, houseReed]) => (
+                        <tr key={element} className="border-b border-gold/5">
+                          <td className="p-3 text-ivory font-medium">{element}</td>
+                          <td className="p-3 text-silver/60">{conventional}</td>
+                          <td className="p-3 text-gold/80">{houseReed}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Founder Quote */}
+              <div className="mb-10">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-4">Founder&apos;s Perspective</p>
+                <div className="border-l-2 border-gold/40 pl-6 py-3">
+                  <p className="text-ivory italic font-heading text-base leading-relaxed mb-2">
+                    &ldquo;Not only are we making it, we&apos;re thriving. We&apos;re creating a way where other people can make it. And we&apos;re doing it in a way where no one can stop us.&rdquo;
+                  </p>
+                  <p className="text-gold/60 text-xs">— Reginald Reed Jr., Wisconsin Public Radio · 2021</p>
+                </div>
+                <p className="text-silver text-sm leading-relaxed mt-4">
+                  The Home Buyers Program isn&apos;t a response to a grant opportunity or a policy mandate. It&apos;s a direct application of the same design logic used to build every component of the House Reed ecosystem: <span className="text-ivory font-medium">connect what&apos;s broken, eliminate what&apos;s extractive, and engineer something that compounds.</span>
+                </p>
+              </div>
+
+              {/* Ecosystem Connection */}
+              <div className="mb-10">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-4">Ecosystem Integration</p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {[
+                    { title: "Upstream: The Mindful Group", desc: "Training pipeline (CNA, construction, manufacturing) produces the graduates who qualify for the housing pathway. ~90% graduation rate means a consistent supply of candidates.", tags: ["Workforce Training", "Stellar Engine"] },
+                    { title: "Operational: House Reed Holdings", desc: "Holds real estate assets, manages rehabilitation, and structures rent-to-own agreements. Commercial and residential properties in 53206 form the asset base.", tags: ["Real Estate", "Asset Holding"] },
+                    { title: "Support: Nana's + Cozy Cruisers", desc: "Childcare and transportation remove barriers that prevent participants from completing training or maintaining employment — prerequisites for the housing pathway.", tags: ["Childcare", "Transportation"] },
+                    { title: "Data Layer: REIGN\u2122", desc: "Real-Time Resume tracks participant performance across training and employment, creating an evidence base for program eligibility and reducing subjective bias.", tags: ["REIGN Platform", "Performance Data"] },
+                  ].map((card) => (
+                    <div key={card.title} className="border border-gold/10 p-5">
+                      <p className="text-gold text-xs font-semibold mb-2">{card.title}</p>
+                      <p className="text-silver text-xs leading-relaxed mb-3">{card.desc}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {card.tags.map((tag) => (
+                          <span key={tag} className="text-[10px] text-gold/60 border border-gold/15 px-2 py-0.5">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Replication */}
+              <div>
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-4">Scale &amp; Replication</p>
+                <div className="border border-gold/10 p-6">
+                  <p className="text-ivory font-heading text-base mb-3">From Milwaukee to Multi-Market</p>
+                  <p className="text-silver text-sm leading-relaxed mb-4">
+                    The integrated model is currently operating in Milwaukee with documented city government support. Active expansion conversations are underway in St. Louis, MO, and Nashville, TN. The structural logic is transferable to any urban market where workforce training graduation rates are high and homeownership barriers remain systemic.
+                  </p>
+                  <p className="text-silver text-sm leading-relaxed">
+                    Harvard&apos;s Project on Workforce has validated the Stellar Engine as aligned with national policy recommendations for WIOA reform. That validation — paired with the City of Milwaukee&apos;s public support for the housing initiative — positions the full integrated model as a demonstrable answer to what actually reverses urban poverty, rather than temporarily alleviates it.
+                  </p>
+                </div>
               </div>
             </Accordion>
           </AnimatedSection>
