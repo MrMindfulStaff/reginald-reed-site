@@ -16,7 +16,7 @@ export default function Footer() {
               Milwaukee&apos;s 53206.
             </p>
             <a
-              href="https://www.linkedin.com/in/reginald-reed-jr"
+              href="https://www.linkedin.com/in/reginald-reed-jr-01862368/"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-silver hover:text-gold transition-colors text-sm"

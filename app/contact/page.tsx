@@ -191,7 +191,7 @@ export default function Contact() {
                     LinkedIn
                   </span>
                   <a
-                    href="https://www.linkedin.com/in/reginald-reed-jr"
+                    href="https://www.linkedin.com/in/reginald-reed-jr-01862368/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-gold transition-colors"

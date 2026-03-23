@@ -47,7 +47,7 @@ export default function Navigation() {
             </Link>
           ))}
           <a
-            href="https://www.linkedin.com/in/reginald-reed-jr"
+            href="https://www.linkedin.com/in/reginald-reed-jr-01862368/"
             target="_blank"
             rel="noopener noreferrer"
             className="text-silver hover:text-gold transition-colors ml-2"
@@ -121,7 +121,7 @@ export default function Navigation() {
                 </Link>
               ))}
               <a
-                href="https://www.linkedin.com/in/reginald-reed-jr"
+                href="https://www.linkedin.com/in/reginald-reed-jr-01862368/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-silver hover:text-gold transition-colors text-sm uppercase tracking-wide pt-2 border-t border-gold/10"
