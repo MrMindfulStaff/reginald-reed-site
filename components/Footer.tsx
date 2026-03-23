@@ -68,8 +68,22 @@ export default function Footer() {
               >
                 The Mindful Group
               </a>
-              <p>Mindful Staffing Solutions</p>
-              <p>Mindful Measures (REIGN)</p>
+              <a
+                href="https://www.mindfulstaff.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block hover:text-gold transition-colors"
+              >
+                Mindful Staffing Solutions
+              </a>
+              <a
+                href="https://www.reignos.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block hover:text-gold transition-colors"
+              >
+                Mindful Measures (REIGN)
+              </a>
               <a
                 href="https://www.nanascozycorner.com"
                 target="_blank"

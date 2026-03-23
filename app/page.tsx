@@ -18,7 +18,7 @@ const metrics = [
 const ecosystemPreview = [
   { name: "The Mindful Group", role: "Workforce Training", type: "501(c)(3)" },
   { name: "Mindful Staffing", role: "Employment Pipeline", type: "For-Profit" },
-  { name: "Mindful Measures", role: "REIGN AI Platform", type: "Technology" },
+  { name: "Mindful Measures", role: "REIGN Workforce OS", type: "Technology" },
   {
     name: "Nana's Cozy Corner",
     role: "Childcare Infrastructure",
