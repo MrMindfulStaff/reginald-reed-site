@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
@@ -98,7 +99,7 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      <section className="min-h-screen flex items-center relative overflow-hidden">
         {/* Background grid */}
         <div className="absolute inset-0 opacity-5">
           <div
@@ -114,47 +115,97 @@ export default function Home() {
         {/* Gradient glow */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="max-w-5xl mx-auto px-6 text-center relative z-10 pt-24">
-          <motion.p
-            className="text-gold text-sm uppercase tracking-[0.3em] mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Milwaukee &middot; 53206
-          </motion.p>
+        <div className="max-w-7xl mx-auto px-6 relative z-10 pt-32 pb-16 grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+          {/* Left — Text */}
+          <div>
+            <motion.p
+              className="text-gold text-sm uppercase tracking-[0.3em] mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              Milwaukee &middot; 53206
+            </motion.p>
 
-          <motion.h1
-            className="text-5xl md:text-7xl lg:text-8xl font-heading leading-tight mb-8"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            <span className="text-ivory">Systems Designer.</span>
-            <br />
-            <span className="text-gold">Liberation Architect.</span>
-          </motion.h1>
+            <motion.h1
+              className="text-5xl md:text-6xl lg:text-7xl font-heading leading-tight mb-8"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <span className="text-ivory">Systems Designer.</span>
+              <br />
+              <span className="text-gold">Liberation Architect.</span>
+            </motion.h1>
 
-          <motion.p
-            className="text-silver text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.7 }}
-          >
-            I build integrated enterprise ecosystems that reverse urban poverty.
-            Not programs. Not nonprofits. Infrastructure — where every entity
-            feeds the next and liberation compounds.
-          </motion.p>
+            <motion.p
+              className="text-silver text-lg md:text-xl leading-relaxed mb-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.7 }}
+            >
+              I build integrated enterprise ecosystems that reverse urban poverty.
+              Not programs. Not nonprofits. Infrastructure — where every entity
+              feeds the next and liberation compounds.
+            </motion.p>
 
-          {/* Metrics */}
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.0 }}
+            >
+              <Link
+                href="/about"
+                className="px-8 py-4 bg-gold text-obsidian font-semibold text-sm uppercase tracking-wider hover:bg-gold-light transition-colors text-center"
+              >
+                The Origin Story
+              </Link>
+              <Link
+                href="/contact"
+                className="px-8 py-4 border border-gold/40 text-gold text-sm uppercase tracking-wider hover:bg-gold/10 transition-colors text-center"
+            >
+              Connect
+            </Link>
+          </motion.div>
+          </div>
+
+          {/* Right — Photo */}
           <motion.div
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16"
+            className="relative hidden md:block"
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.6 }}
+          >
+            <div className="relative">
+              {/* Gold accent border */}
+              <div className="absolute -top-4 -right-4 w-full h-full border-2 border-gold/20" />
+              <div className="relative overflow-hidden bg-obsidian-light">
+                <Image
+                  src="/images/reginald-seated.jpg"
+                  alt="Reginald Reed Jr."
+                  width={600}
+                  height={800}
+                  className="w-full h-auto object-cover grayscale-[20%]"
+                  priority
+                />
+                {/* Bottom gradient fade */}
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-obsidian to-transparent" />
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Metrics — full width below hero */}
+        <div className="max-w-5xl mx-auto px-6 relative z-10 pb-16">
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 1.0 }}
+            transition={{ duration: 0.7, delay: 1.3 }}
           >
             {metrics.map((m) => (
-              <div key={m.label} className="group">
+              <div key={m.label} className="group text-center">
                 <p className="text-4xl md:text-5xl font-heading text-gold group-hover:scale-105 transition-transform">
                   <AnimatedCounter
                     value={m.value}
@@ -167,26 +218,6 @@ export default function Home() {
                 </p>
               </div>
             ))}
-          </motion.div>
-
-          <motion.div
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.3 }}
-          >
-            <Link
-              href="/about"
-              className="px-8 py-4 bg-gold text-obsidian font-semibold text-sm uppercase tracking-wider hover:bg-gold-light transition-colors"
-            >
-              The Origin Story
-            </Link>
-            <Link
-              href="/contact"
-              className="px-8 py-4 border border-gold/40 text-gold text-sm uppercase tracking-wider hover:bg-gold/10 transition-colors"
-            >
-              Connect
-            </Link>
           </motion.div>
         </div>
       </section>

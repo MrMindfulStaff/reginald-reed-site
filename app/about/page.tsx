@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import AnimatedSection, {
   StaggerContainer,
   StaggerItem,
@@ -48,8 +49,9 @@ export default function About() {
     <>
       {/* Hero */}
       <section className="pt-32 pb-24">
-        <div className="max-w-4xl mx-auto px-6">
-          <AnimatedSection>
+        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-5 gap-12 items-center">
+          {/* Text — 3 cols */}
+          <AnimatedSection className="md:col-span-3">
             <p className="text-gold text-sm uppercase tracking-[0.3em] mb-6">
               Origin Story
             </p>
@@ -58,13 +60,31 @@ export default function About() {
               <br />
               <span className="text-gold">No Excuses.</span>
             </h1>
-            <p className="text-silver text-lg md:text-xl leading-relaxed max-w-3xl">
+            <p className="text-silver text-lg md:text-xl leading-relaxed">
               I didn&apos;t study systems design in a university. I learned it
               by surviving inside a broken system and deciding to build a better
               one. Every entity in the House Reed ecosystem exists because I
               watched someone fail — not from lack of effort, but from lack of
               infrastructure.
             </p>
+          </AnimatedSection>
+
+          {/* Photo — 2 cols */}
+          <AnimatedSection delay={0.3} className="md:col-span-2 hidden md:block">
+            <div className="relative">
+              <div className="absolute -bottom-4 -left-4 w-full h-full border-2 border-gold/20" />
+              <div className="relative overflow-hidden">
+                <Image
+                  src="/images/reginald-standing.jpg"
+                  alt="Reginald Reed Jr."
+                  width={500}
+                  height={700}
+                  className="w-full h-auto object-cover grayscale-[20%]"
+                  priority
+                />
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-obsidian to-transparent" />
+              </div>
+            </div>
           </AnimatedSection>
         </div>
       </section>
