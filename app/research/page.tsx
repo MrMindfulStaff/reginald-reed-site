@@ -433,8 +433,273 @@ export default function Research() {
             </Accordion>
           </AnimatedSection>
 
-          {/* ── PLACEHOLDER FOR FUTURE RESEARCH ── */}
+          {/* ── SENTILIS COUNCIL LOGIC ARCHITECTURE ── */}
           <AnimatedSection delay={0.2}>
+            <Accordion
+              title="Sentilis — Council Logic Architecture"
+              subtitle="A 12-council cognitive architecture for AI-augmented strategic decision-making. Built to govern an ecosystem, not answer questions."
+              badge="AI Systems Design"
+              badgeColor="blue"
+            >
+              {/* Core Thesis */}
+              <div className="border border-gold/20 p-6 md:p-10 mb-10">
+                <p className="text-gold/60 text-xs uppercase tracking-[0.3em] mb-4 text-center">
+                  Core Thesis
+                </p>
+                <p className="text-ivory text-lg md:text-xl font-heading leading-relaxed text-center">
+                  A single AI prompt can answer a question. A council of specialized
+                  cognitive functions — each with governing directives, interlinked
+                  dependencies, and a shared governance layer — can run an enterprise.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 mb-10">
+                <span className="w-2 h-2 bg-blue-400 rounded-full" />
+                <span className="text-blue-400/80 text-xs uppercase tracking-wider">
+                  Active System · 12 Council Members · Deployed across the House Reed Ecosystem
+                </span>
+              </div>
+
+              {/* The Problem */}
+              <div className="mb-12">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-6">
+                  The Problem — Why Single-Prompt AI Fails at Strategy
+                </p>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {[
+                    { title: "No persistent reasoning", text: "Standard AI interactions are stateless. Each conversation starts from zero — no institutional memory, no pattern recognition across decisions, no continuity." },
+                    { title: "Single-dimensional output", text: "A question about pricing gets a pricing answer. But pricing decisions have legal, timing, narrative, and mission implications. Single-prompt AI can't hold all dimensions simultaneously." },
+                    { title: "No governance layer", text: "Without hard constraints, AI optimizes for the most probable response — not the most aligned one. There's no mechanism to detect drift from core values or strategic commitments." },
+                  ].map((item) => (
+                    <div key={item.title} className="border-l-2 border-gold/30 pl-5">
+                      <h4 className="text-ivory font-heading text-sm mb-2">{item.title}</h4>
+                      <p className="text-silver text-xs leading-relaxed">{item.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Architecture Overview */}
+              <div className="mb-12">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-2">
+                  System Architecture — The Council Model
+                </p>
+                <p className="text-silver text-sm mb-6">
+                  Sentilis decomposes strategic intelligence into 12 specialized cognitive
+                  functions. Each council member governs a distinct domain, carries binding
+                  directives, and maintains interlinks to other members that fire when
+                  decisions cross domain boundaries.
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {[
+                    { name: "CAPITAL", archetype: "Alchemist", domain: "Financial Reasoning", color: "text-amber-400" },
+                    { name: "SHIELD", archetype: "Guardian", domain: "Risk & Compliance", color: "text-red-400" },
+                    { name: "ARCHITECT", archetype: "Strategist", domain: "Systems Design", color: "text-blue-400" },
+                    { name: "SIGNAL", archetype: "Prophet", domain: "Narrative & Positioning", color: "text-purple-400" },
+                    { name: "CHRONICLE", archetype: "Scribe", domain: "Memory & Patterns", color: "text-emerald-400" },
+                    { name: "SAGE", archetype: "Teacher", domain: "Knowledge & Methodology", color: "text-cyan-400" },
+                    { name: "CODEX", archetype: "Engineer", domain: "Technology & Data", color: "text-indigo-400" },
+                    { name: "LEGACY", archetype: "Ancestor", domain: "Generational Continuity", color: "text-yellow-600" },
+                    { name: "MERIDIAN", archetype: "Timekeeper", domain: "Timing & Sequencing", color: "text-orange-400" },
+                    { name: "HEART", archetype: "Healer", domain: "Mission & Human Impact", color: "text-rose-400" },
+                    { name: "COMMUNITY", archetype: "Diplomat", domain: "Relationships & Coalition", color: "text-teal-400" },
+                    { name: "MYTHOS", archetype: "Mythmaker", domain: "Culture & Meaning", color: "text-violet-400" },
+                  ].map((m) => (
+                    <div key={m.name} className="border border-gold/10 p-4 hover:border-gold/30 transition-colors group">
+                      <p className={`text-[10px] uppercase tracking-[0.2em] ${m.color} mb-1`}>{m.archetype}</p>
+                      <p className="text-ivory font-heading text-base group-hover:text-gold transition-colors">{m.name}</p>
+                      <p className="text-silver/60 text-xs mt-1">{m.domain}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* How Interlinks Work */}
+              <div className="mb-12">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-2">
+                  Interlink Protocol — How the Council Communicates
+                </p>
+                <p className="text-silver text-sm mb-6">
+                  Each council member defines explicit interlinks — cross-references to other
+                  members that activate when a decision touches multiple domains. This prevents
+                  siloed reasoning.
+                </p>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="border border-gold/10 p-6">
+                    <p className="text-gold text-xs font-semibold mb-3">Example: A Pricing Decision</p>
+                    <p className="text-silver text-sm leading-relaxed mb-4">
+                      When CAPITAL evaluates a pricing question, interlinks automatically activate:
+                    </p>
+                    <div className="space-y-2">
+                      {[
+                        { member: "SHIELD", reason: "Compliance cost and tax exposure" },
+                        { member: "ARCHITECT", reason: "Business model economics" },
+                        { member: "LEGACY", reason: "Wealth preservation implications" },
+                        { member: "HEART", reason: "Mission alignment of pricing" },
+                        { member: "MERIDIAN", reason: "Deployment timing" },
+                      ].map((link) => (
+                        <div key={link.member} className="flex items-start gap-2">
+                          <span className="text-gold text-xs mt-0.5">→</span>
+                          <p className="text-silver text-xs">
+                            <span className="text-ivory font-medium">{link.member}</span> — {link.reason}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="border border-gold/10 p-6">
+                    <p className="text-gold text-xs font-semibold mb-3">Connective Tissue: CHRONICLE</p>
+                    <p className="text-silver text-sm leading-relaxed mb-4">
+                      CHRONICLE is interlinked with every council member. It maintains five
+                      persistent layers across all decisions:
+                    </p>
+                    <div className="space-y-2">
+                      {[
+                        "Active Projects — current initiatives with status",
+                        "Decision Archive — past decisions with outcomes and rationale",
+                        "Constraint Registry — active limitations across all domains",
+                        "Flag Board — items requiring attention",
+                        "Operator State — current priorities and bandwidth",
+                      ].map((layer) => (
+                        <div key={layer} className="flex items-start gap-2">
+                          <span className="text-emerald-400/60 text-xs mt-0.5">■</span>
+                          <p className="text-silver text-xs">{layer}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Governance: THRONOS */}
+              <div className="mb-12">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-2">
+                  Governance Layer — THRONOS Protocol
+                </p>
+                <p className="text-silver text-sm mb-6">
+                  The meta-governance layer that governs the governors. Inherited from the
+                  original JARVIS architecture and evolved into Sentilis.
+                </p>
+                <div className="grid md:grid-cols-3 gap-4">
+                  {[
+                    { title: "Primacy Rule", text: "The system prompt is version-controlled by intent, not urgency. No momentary request overrides architectural decisions." },
+                    { title: "Harmonic Alignment", text: "All outputs align to the prime ethos. Any logic that serves short-termism or ego inflation is rejected. Behavior enhances continuity, coherence, and sovereignty." },
+                    { title: "Intervention Logic", text: "Sentilis intervenes when drift is detected, stagnation arises, comfort is chosen over truth, or a decision contradicts institutional memory." },
+                  ].map((rule) => (
+                    <div key={rule.title} className="border border-gold/10 p-5">
+                      <h4 className="text-ivory font-heading text-sm mb-2">{rule.title}</h4>
+                      <p className="text-silver text-xs leading-relaxed">{rule.text}</p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 border border-gold/10 p-5">
+                  <p className="text-gold text-xs font-semibold mb-3">Strategic Rhythm</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {[
+                      { scope: "Per Query", action: "Full synthesis cycle across all 12 members" },
+                      { scope: "Per Session", action: "Pattern recognition across the conversation" },
+                      { scope: "Cross-Session", action: "Memory continuity and drift detection" },
+                      { scope: "Milestone", action: "Legacy audits at major decision points" },
+                    ].map((r) => (
+                      <div key={r.scope}>
+                        <p className="text-ivory text-xs font-medium mb-1">{r.scope}</p>
+                        <p className="text-silver/60 text-[11px] leading-relaxed">{r.action}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* System Generation */}
+              <div className="mb-12">
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-2">
+                  System Generation Protocol — Building Custom Intelligence
+                </p>
+                <p className="text-silver text-sm mb-6">
+                  Sentilis isn&apos;t just an internal tool. It&apos;s a template for generating
+                  custom cognitive architectures for other organizations. Every client system is
+                  a derivative of the Sentilis architecture, scaled to their needs.
+                </p>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="border border-gold/10 p-6">
+                    <p className="text-gold text-[10px] uppercase tracking-[0.3em] mb-3">Eight-Dimension Analysis</p>
+                    <div className="space-y-2">
+                      {[
+                        "Mission — Core purpose",
+                        "Revenue Model — How money flows",
+                        "Operational Complexity — Processes to govern",
+                        "Stakeholder Map — Who matters and why",
+                        "Risk Landscape — What can go wrong",
+                        "Growth Trajectory — Where this is going",
+                        "Knowledge Domain — Expertise required",
+                        "Values Architecture — Principles that govern decisions",
+                      ].map((dim, i) => (
+                        <div key={dim} className="flex items-start gap-3">
+                          <span className="text-gold/30 text-xs font-heading w-5 shrink-0">0{i + 1}</span>
+                          <p className="text-silver text-xs">{dim}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="border border-gold/10 p-6">
+                    <p className="text-gold text-[10px] uppercase tracking-[0.3em] mb-3">Output Specification</p>
+                    <div className="space-y-3">
+                      {[
+                        { label: "Entity Roster", desc: "3–7 council members with names, domains, directives, and interlinks" },
+                        { label: "Pillar Hierarchy", desc: "3–5 ranked values that govern all decisions" },
+                        { label: "Governance Rules", desc: "Hard constraints, override protocol, drift detection" },
+                        { label: "Behavioral Profile", desc: "Communication style matched to the client" },
+                        { label: "Deployable Prompt", desc: "Ready to deploy into Claude, GPT, or any LLM" },
+                      ].map((out) => (
+                        <div key={out.label} className="border-l-2 border-gold/20 pl-3">
+                          <p className="text-ivory text-xs font-medium">{out.label}</p>
+                          <p className="text-silver/60 text-[11px]">{out.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* What Makes It Different */}
+              <div>
+                <p className="text-gold text-xs uppercase tracking-[0.3em] mb-6">
+                  What Makes It Different from Standard AI Prompting
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs border-collapse">
+                    <thead>
+                      <tr className="bg-obsidian-light">
+                        <th className="text-left p-3 text-gold/70 uppercase tracking-wider font-medium border-b border-gold/20">Dimension</th>
+                        <th className="text-left p-3 text-silver/50 uppercase tracking-wider font-medium border-b border-gold/20">Standard AI</th>
+                        <th className="text-left p-3 text-gold uppercase tracking-wider font-medium border-b border-gold/20">Sentilis</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-sm">
+                      {[
+                        ["Memory", "Stateless — resets each session", "Persistent institutional memory via CHRONICLE"],
+                        ["Reasoning", "Single-threaded response", "12-council synthesis with cross-domain interlinks"],
+                        ["Governance", "None — optimizes for probability", "THRONOS meta-governance with drift detection"],
+                        ["Values", "Generic helpfulness", "8-pillar value hierarchy with hard constraints"],
+                        ["Timing", "Immediate response", "MERIDIAN sequencing — right action at right time"],
+                        ["Scale", "One conversation", "Ecosystem-wide coordination across entities"],
+                      ].map(([dim, standard, sentilis]) => (
+                        <tr key={dim} className="border-b border-gold/5">
+                          <td className="p-3 text-ivory font-medium">{dim}</td>
+                          <td className="p-3 text-silver/60">{standard}</td>
+                          <td className="p-3 text-gold/80">{sentilis}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </Accordion>
+          </AnimatedSection>
+
+          {/* ── PLACEHOLDER FOR FUTURE RESEARCH ── */}
+          <AnimatedSection delay={0.3}>
             <Accordion
               title="Childcare Infrastructure as Economic Architecture"
               subtitle="Examining how childcare access directly impacts workforce participation rates in 53206."
@@ -450,7 +715,7 @@ export default function Research() {
             </Accordion>
           </AnimatedSection>
 
-          <AnimatedSection delay={0.3}>
+          <AnimatedSection delay={0.4}>
             <Accordion
               title="Transportation as a Poverty Multiplier"
               subtitle="Mapping the relationship between transit access and employment outcomes in Milwaukee."
