@@ -93,6 +93,14 @@ export default function Footer() {
                 Nana&apos;s Cozy Corner
               </a>
               <p>Cozy Cruisers</p>
+              <a
+                href="https://www.skool.com/blackwealth"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block hover:text-gold transition-colors"
+              >
+                Black Entrepreneurship Society
+              </a>
             </div>
           </div>
         </div>
