@@ -204,7 +204,7 @@ export default function Home() {
           transition={{ duration: 0.6, delay: 1.15 }}
         >
           <a
-            href="#"
+            href="/rtr"
             target="_blank"
             rel="noopener noreferrer"
             className="group flex flex-col items-center justify-center gap-4 hover:opacity-90 transition-opacity"

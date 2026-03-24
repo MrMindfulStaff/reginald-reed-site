@@ -1,0 +1,420 @@
+
+<style>
+  #rtr-wrap{background:#0f1117;border-radius:12px;overflow:hidden;border:0.5px solid rgba(255,255,255,0.1);font-family:'Inter',system-ui,sans-serif;color:#e2e8f0;}
+  .rtr-header{background:#080b12;padding:20px 24px;border-bottom:0.5px solid rgba(255,255,255,0.07);display:flex;justify-content:space-between;align-items:center;}
+  .rtr-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#3b6fe8,#9b59f5);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;flex-shrink:0;}
+  .rtr-section{padding:20px 24px;border-bottom:0.5px solid rgba(255,255,255,0.05);}
+  .rtr-label{font-size:11px;color:#6b7280;letter-spacing:0.5px;margin-bottom:12px;text-transform:uppercase;}
+  .career-bar{display:flex;height:26px;border-radius:4px;overflow:hidden;margin-bottom:10px;}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;}
+  .col-pad{padding:0 20px;}
+  .col-pad:first-child{padding-left:0;border-right:0.5px solid rgba(255,255,255,0.05);}
+  .col-pad:last-child{padding-right:0;padding-left:20px;}
+  .col-pad:nth-child(2){border-right:0.5px solid rgba(255,255,255,0.05);}
+  .badge-hex{display:flex;flex-direction:column;align-items:center;gap:5px;width:76px;padding:10px 6px;background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.08);border-radius:6px;}
+  .metric-tab{padding:5px 12px;border-radius:4px;border:0.5px solid rgba(255,255,255,0.1);background:transparent;color:#9ca3af;font-size:11px;cursor:pointer;font-family:inherit;}
+  .metric-tab.active{background:#3b6fe8;border-color:#3b6fe8;color:#fff;}
+  .job-row{border-radius:6px;margin-bottom:6px;overflow:hidden;border:0.5px solid transparent;transition:border-color 0.15s;}
+  .job-row.open{border-color:rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);}
+  .job-trigger{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;}
+  .job-bar{width:3px;align-self:stretch;border-radius:0;flex-shrink:0;}
+  .hours-pill{display:inline-block;padding:2px 8px;border-radius:3px;font-size:11px;font-family:monospace;}
+  .active-badge{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;background:rgba(16,185,129,0.15);border:0.5px solid rgba(16,185,129,0.3);color:#6ee7b7;font-family:monospace;margin-left:6px;}
+  .new-badge{display:inline-block;padding:1px 7px;border-radius:3px;font-size:10px;background:rgba(245,158,11,0.15);border:0.5px solid rgba(245,158,11,0.3);color:#fcd34d;font-family:monospace;margin-left:6px;}
+</style>
+
+<div id="rtr-wrap">
+
+  <div class="rtr-header">
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div class="rtr-avatar">RR</div>
+      <div>
+        <div style="font-size:11px;color:#6b7280;letter-spacing:0.5px;margin-bottom:2px;">Real-Time Resume™ &middot; Powered by REIGN</div>
+        <div style="font-size:20px;font-weight:700;color:#fff;line-height:1.1;margin-bottom:2px;">Reginald Reed Jr.</div>
+        <div style="font-size:11px;color:#6b7280;">Milwaukee, WI 53206 &nbsp;&middot;&nbsp; reignos.ai &nbsp;&middot;&nbsp; Founder &amp; CEO, Mindful Measures Inc.</div>
+      </div>
+    </div>
+    <div style="text-align:right;flex-shrink:0;">
+      <div style="font-size:10px;color:#6b7280;font-family:monospace;margin-bottom:2px;">LAST UPDATED</div>
+      <div style="font-size:12px;color:#e2e8f0;font-family:monospace;" id="rtr-date"></div>
+      <div style="font-size:10px;color:#10b981;font-family:monospace;margin-top:4px;">&#9679; LIVE</div>
+    </div>
+  </div>
+
+  <div class="rtr-section">
+    <div class="rtr-label">Career Overview</div>
+    <div class="career-bar">
+      <div style="width:32%;background:#3b6fe8;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:rgba(255,255,255,0.95);">Construction</div>
+      <div style="width:20%;background:#9b59f5;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:rgba(255,255,255,0.95);">Workforce</div>
+      <div style="width:17%;background:#e84393;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:rgba(255,255,255,0.95);">AI/Tech</div>
+      <div style="width:14%;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:rgba(255,255,255,0.95);">Staffing</div>
+      <div style="width:11%;background:#10b981;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:rgba(255,255,255,0.95);">BES</div>
+      <div style="width:6%;background:#374151;"></div>
+    </div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;">
+      <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#9ca3af;"><span style="width:8px;height:8px;border-radius:2px;background:#3b6fe8;display:inline-block;"></span>Construction <span style="color:#6ee7b7;font-size:10px;">&#9679;</span></span>
+      <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#9ca3af;"><span style="width:8px;height:8px;border-radius:2px;background:#9b59f5;display:inline-block;"></span>Workforce Dev</span>
+      <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#9ca3af;"><span style="width:8px;height:8px;border-radius:2px;background:#e84393;display:inline-block;"></span>AI / Technology</span>
+      <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#9ca3af;"><span style="width:8px;height:8px;border-radius:2px;background:#f59e0b;display:inline-block;"></span>Staffing</span>
+      <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:#9ca3af;"><span style="width:8px;height:8px;border-radius:2px;background:#10b981;display:inline-block;"></span>Black Entrepreneurship <span style="color:#fcd34d;font-size:10px;">&#9733; new</span></span>
+    </div>
+    <div style="font-size:11px;color:#4b5563;font-family:monospace;">Roles run concurrently &mdash; hours are per-role, not deduplicated</div>
+  </div>
+
+  <div class="rtr-section">
+    <div class="three-col">
+      <div class="col-pad">
+        <div class="rtr-label">Bio</div>
+        <p style="font-size:12px;color:#9ca3af;line-height:1.75;margin:0;">Started in construction at 19 and never left. While still actively working in the trades, built one of the most integrated anti-poverty ecosystems in America. No degree. No institutional backing. From Milwaukee's 53206, engineered a self-reinforcing pipeline where workforce training, staffing, AI technology, childcare, and transportation compound into liberation infrastructure. In 2025, launched The Black Entrepreneurship Society — bringing world-class business tools to minority founders. 525+ people trained. $60M+ in wages generated.</p>
+      </div>
+      <div class="col-pad">
+        <div class="rtr-label">Education</div>
+        <div style="margin-bottom:12px;">
+          <div style="font-size:13px;font-weight:500;color:#e5e7eb;margin-bottom:1px;">Self-Directed Systems Education</div>
+          <div style="font-size:12px;color:#6b7280;">Org Architecture &amp; AI Design</div>
+          <div style="font-size:11px;color:#4b5563;font-family:monospace;">2010 &ndash; Present</div>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:#e5e7eb;margin-bottom:1px;">23 Years Field Education</div>
+          <div style="font-size:12px;color:#6b7280;">Construction Trades &mdash; Full Lifecycle</div>
+          <div style="font-size:11px;color:#4b5563;font-family:monospace;">2003 &ndash; Present <span style="color:#6ee7b7;">&#9679; active</span></div>
+        </div>
+      </div>
+      <div class="col-pad">
+        <div class="rtr-label">Certifications</div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:500;color:#e5e7eb;">REIGN IWOS Architect</div>
+          <div style="font-size:11px;color:#6b7280;">Mindful Measures Inc.</div>
+          <div style="font-size:11px;color:#4b5563;font-family:monospace;">2022</div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:500;color:#e5e7eb;">Workforce Dev Program Design</div>
+          <div style="font-size:11px;color:#6b7280;">The Mindful Group</div>
+          <div style="font-size:11px;color:#4b5563;font-family:monospace;">2016</div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:500;color:#e5e7eb;">Construction Project Management</div>
+          <div style="font-size:11px;color:#6b7280;">Field Certified</div>
+          <div style="font-size:11px;color:#4b5563;font-family:monospace;">2003 &ndash; Present <span style="color:#6ee7b7;">&#9679;</span></div>
+        </div>
+        <span style="background:rgba(59,111,232,0.12);border:0.5px solid rgba(59,111,232,0.3);border-radius:3px;padding:3px 10px;font-size:11px;color:#93c5fd;">Total: 3</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rtr-section">
+    <div class="rtr-label">Badges</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div class="badge-hex"><div style="width:40px;height:40px;border-radius:50%;background:rgba(59,111,232,0.2);border:1.5px solid rgba(59,111,232,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">&#127959;</div><span style="font-size:9px;color:#9ca3af;text-align:center;line-height:1.3;">Trades Veteran</span></div>
+      <div class="badge-hex"><div style="width:40px;height:40px;border-radius:50%;background:rgba(155,89,245,0.2);border:1.5px solid rgba(155,89,245,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">&#129302;</div><span style="font-size:9px;color:#9ca3af;text-align:center;line-height:1.3;">AI Pioneer</span></div>
+      <div class="badge-hex"><div style="width:40px;height:40px;border-radius:50%;background:rgba(232,67,147,0.2);border:1.5px solid rgba(232,67,147,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">&#128161;</div><span style="font-size:9px;color:#9ca3af;text-align:center;line-height:1.3;">Category Creator</span></div>
+      <div class="badge-hex"><div style="width:40px;height:40px;border-radius:50%;background:rgba(16,185,129,0.2);border:1.5px solid rgba(16,185,129,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">&#127758;</div><span style="font-size:9px;color:#9ca3af;text-align:center;line-height:1.3;">Community Builder</span></div>
+      <div class="badge-hex"><div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.2);border:1.5px solid rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">&#128640;</div><span style="font-size:9px;color:#9ca3af;text-align:center;line-height:1.3;">Serial Founder</span></div>
+      <div class="badge-hex"><div style="width:40px;height:40px;border-radius:50%;background:rgba(59,111,232,0.2);border:1.5px solid rgba(59,111,232,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">&#9878;</div><span style="font-size:9px;color:#9ca3af;text-align:center;line-height:1.3;">Liberation Architect</span></div>
+      <div class="badge-hex"><div style="width:40px;height:40px;border-radius:50%;background:rgba(155,89,245,0.2);border:1.5px solid rgba(155,89,245,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">&#127959;</div><span style="font-size:9px;color:#9ca3af;text-align:center;line-height:1.3;">Systems Architect</span></div>
+      <div class="badge-hex"><div style="width:40px;height:40px;border-radius:50%;background:rgba(16,185,129,0.2);border:1.5px solid rgba(16,185,129,0.4);display:flex;align-items:center;justify-content:center;font-size:16px;">&#128200;</div><span style="font-size:9px;color:#9ca3af;text-align:center;line-height:1.3;">Impact at Scale</span></div>
+      <div class="badge-hex" style="border-color:rgba(245,158,11,0.3);"><div style="width:40px;height:40px;border-radius:50%;background:rgba(245,158,11,0.2);border:1.5px solid rgba(245,158,11,0.5);display:flex;align-items:center;justify-content:center;font-size:16px;">&#9995;</div><span style="font-size:9px;color:#fcd34d;text-align:center;line-height:1.3;">Equity Builder</span></div>
+    </div>
+  </div>
+
+  <div class="rtr-section">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+      <div class="rtr-label" style="margin-bottom:0;">Timeline</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="metric-tab active" onclick="setTab(this,'impact')">Impact Score</button>
+        <button class="metric-tab" onclick="setTab(this,'hours')">Career Hours</button>
+        <button class="metric-tab" onclick="setTab(this,'orgs')">Orgs Founded</button>
+      </div>
+    </div>
+    <div style="background:#080b12;border-radius:6px;padding:12px 8px;">
+      <canvas id="tl-chart" height="120"></canvas>
+    </div>
+  </div>
+
+  <div class="rtr-section">
+    <div class="rtr-label">Impact Metrics</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;">
+      <div style="background:#080b12;border-radius:6px;padding:14px;border:0.5px solid rgba(255,255,255,0.05);">
+        <div style="font-size:11px;color:#6b7280;margin-bottom:3px;">People Trained</div>
+        <div style="font-size:22px;font-weight:700;color:#fff;line-height:1;margin-bottom:2px;">525+</div>
+        <div style="font-size:10px;color:#4b5563;">CNA &middot; CBRF &middot; Construction</div>
+      </div>
+      <div style="background:#080b12;border-radius:6px;padding:14px;border:0.5px solid rgba(255,255,255,0.05);">
+        <div style="font-size:11px;color:#6b7280;margin-bottom:3px;">Wages Generated</div>
+        <div style="font-size:22px;font-weight:700;color:#fff;line-height:1;margin-bottom:2px;">$60M+</div>
+        <div style="font-size:10px;color:#4b5563;">Direct economic impact</div>
+      </div>
+      <div style="background:#080b12;border-radius:6px;padding:14px;border:0.5px solid rgba(255,255,255,0.05);">
+        <div style="font-size:11px;color:#6b7280;margin-bottom:3px;">Total Career Hours</div>
+        <div style="font-size:22px;font-weight:700;color:#fff;line-height:1;margin-bottom:2px;">148K+</div>
+        <div style="font-size:10px;color:#4b5563;">Verified @ 2,704 hrs/yr</div>
+      </div>
+      <div style="background:#080b12;border-radius:6px;padding:14px;border:0.5px solid rgba(255,255,255,0.05);">
+        <div style="font-size:11px;color:#6b7280;margin-bottom:3px;">Integrated Entities</div>
+        <div style="font-size:22px;font-weight:700;color:#fff;line-height:1;margin-bottom:2px;">7</div>
+        <div style="font-size:10px;color:#4b5563;">One unified ecosystem</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rtr-section">
+    <div class="rtr-label">Founder Performance Indicators</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;">
+      <div style="padding-right:20px;border-right:0.5px solid rgba(255,255,255,0.05);text-align:center;">
+        <div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:2px;">APR</div>
+        <div style="font-size:10px;color:#6b7280;margin-bottom:10px;">Founder Performance Rating</div>
+        <canvas id="gauge-canvas" width="140" height="90" style="display:block;margin:0 auto;"></canvas>
+        <div style="font-size:13px;color:#9ca3af;font-family:monospace;margin-top:2px;">9.1 / 10</div>
+      </div>
+      <div style="padding:0 20px;border-right:0.5px solid rgba(255,255,255,0.05);text-align:center;">
+        <div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:2px;">PPI</div>
+        <div style="font-size:10px;color:#6b7280;margin-bottom:8px;">Predictive Impact Index</div>
+        <div style="font-size:22px;color:#f59e0b;letter-spacing:2px;margin:8px 0;">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
+        <div style="font-size:13px;color:#9ca3af;font-family:monospace;">4.7</div>
+      </div>
+      <div style="padding-left:20px;text-align:center;">
+        <div style="font-size:13px;font-weight:500;color:#fff;margin-bottom:2px;">SP</div>
+        <div style="font-size:10px;color:#6b7280;margin-bottom:16px;">Success Probability</div>
+        <div style="height:10px;border-radius:5px;overflow:hidden;background:linear-gradient(90deg,#e74c3c,#f1c40f,#2ecc71);position:relative;margin-bottom:4px;">
+          <div style="position:absolute;right:4%;top:-3px;width:3px;height:16px;background:#fff;border-radius:2px;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#6b7280;margin-bottom:8px;"><span>Low</span><span>High</span></div>
+        <div style="font-size:20px;font-weight:700;color:#fff;font-family:monospace;">96%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rtr-section" style="border-bottom:none;">
+    <div class="rtr-label">Employment History &mdash; Verified Career Hours</div>
+
+    <div class="job-row" id="job0">
+      <div class="job-trigger" onclick="toggleJob('job0')">
+        <div class="job-bar" style="background:#3b6fe8;"></div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;">
+            <div><span style="font-size:13px;font-weight:500;color:#e5e7eb;">Construction Professional</span><span style="font-size:12px;color:#9ca3af;"> &middot; Field Operations &mdash; Various GCs</span><span class="active-badge">Active</span></div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span class="hours-pill" style="background:rgba(59,111,232,0.15);border:0.5px solid rgba(59,111,232,0.3);color:#93c5fd;">62,192 hrs</span>
+              <span style="font-size:11px;color:#4b5563;font-family:monospace;">2003&ndash;Present</span>
+              <span style="font-size:11px;color:#4b5563;font-family:monospace;">23 yrs</span>
+              <span id="arr-job0" style="color:#6b7280;font-size:11px;">&#9660;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="exp-job0" style="display:none;padding:0 14px 12px 29px;">
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#3b6fe8;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">Started at 19 &mdash; full project lifecycle from laborer to project lead</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#3b6fe8;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">Residential, commercial &amp; industrial &mdash; Milwaukee and surrounding markets</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#3b6fe8;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">Still active &mdash; field experience directly informs REIGN's construction-first strategy</span></div>
+        <div style="margin-top:10px;padding:8px 12px;background:rgba(59,111,232,0.06);border-radius:4px;border-left:2px solid #3b6fe8;">
+          <div style="font-size:10px;color:#6b7280;margin-bottom:4px;">HOURS BREAKDOWN &mdash; 2,704 verified hrs/yr (2,080 base + 30%)</div>
+          <div style="font-size:12px;color:#93c5fd;font-family:monospace;">23 yrs &times; 2,704 hrs = <strong style="color:#fff;">62,192 hours</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-row" id="job1">
+      <div class="job-trigger" onclick="toggleJob('job1')">
+        <div class="job-bar" style="background:#9b59f5;"></div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;">
+            <div><span style="font-size:13px;font-weight:500;color:#e5e7eb;">Founder</span><span style="font-size:12px;color:#9ca3af;"> &middot; The Mindful Group</span><span class="active-badge">Active</span></div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span class="hours-pill" style="background:rgba(155,89,245,0.15);border:0.5px solid rgba(155,89,245,0.3);color:#c4b5fd;">32,448 hrs</span>
+              <span style="font-size:11px;color:#4b5563;font-family:monospace;">2014&ndash;Present</span>
+              <span style="font-size:11px;color:#4b5563;font-family:monospace;">12 yrs</span>
+              <span id="arr-job1" style="color:#6b7280;font-size:11px;">&#9660;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="exp-job1" style="display:none;padding:0 14px 12px 29px;">
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#9b59f5;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">525+ people trained &mdash; CNA, CBRF, Construction Trades</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#9b59f5;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">$60M+ in wages generated &mdash; zero tuition model</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#9b59f5;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">Removed every barrier between training and economic participation</span></div>
+        <div style="margin-top:10px;padding:8px 12px;background:rgba(155,89,245,0.06);border-radius:4px;border-left:2px solid #9b59f5;">
+          <div style="font-size:10px;color:#6b7280;margin-bottom:4px;">HOURS BREAKDOWN</div>
+          <div style="font-size:12px;color:#c4b5fd;font-family:monospace;">12 yrs &times; 2,704 hrs = <strong style="color:#fff;">32,448 hours</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-row" id="job2">
+      <div class="job-trigger" onclick="toggleJob('job2')">
+        <div class="job-bar" style="background:#e84393;"></div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;">
+            <div><span style="font-size:13px;font-weight:500;color:#e5e7eb;">Founder &amp; CEO</span><span style="font-size:12px;color:#9ca3af;"> &middot; Mindful Measures Inc. (REIGN)</span><span class="active-badge">Active</span></div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span class="hours-pill" style="background:rgba(232,67,147,0.15);border:0.5px solid rgba(232,67,147,0.3);color:#f9a8d4;">27,040 hrs</span>
+              <span style="font-size:11px;color:#4b5563;font-family:monospace;">2016&ndash;Present</span>
+              <span style="font-size:11px;color:#4b5563;font-family:monospace;">10 yrs</span>
+              <span id="arr-job2" style="color:#6b7280;font-size:11px;">&#9660;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="exp-job2" style="display:none;padding:0 14px 12px 29px;">
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#e84393;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">World's first Intelligent Workforce Operating System</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#e84393;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">35+ AI agents, MCP architecture, Real-Time Resume&#8482; technology</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#e84393;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">$2&ndash;3M seed round in motion &mdash; first enterprise customer live</span></div>
+        <div style="margin-top:10px;padding:8px 12px;background:rgba(232,67,147,0.06);border-radius:4px;border-left:2px solid #e84393;">
+          <div style="font-size:10px;color:#6b7280;margin-bottom:4px;">HOURS BREAKDOWN</div>
+          <div style="font-size:12px;color:#f9a8d4;font-family:monospace;">10 yrs &times; 2,704 hrs = <strong style="color:#fff;">27,040 hours</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-row" id="job3">
+      <div class="job-trigger" onclick="toggleJob('job3')">
+        <div class="job-bar" style="background:#f59e0b;"></div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;">
+            <div><span style="font-size:13px;font-weight:500;color:#e5e7eb;">Founder</span><span style="font-size:12px;color:#9ca3af;"> &middot; Mindful Staffing Solutions</span><span class="active-badge">Active</span></div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span class="hours-pill" style="background:rgba(245,158,11,0.15);border:0.5px solid rgba(245,158,11,0.3);color:#fcd34d;">24,336 hrs</span>
+              <span style="font-size:11px;color:#4b5563;font-family:monospace;">2017&ndash;Present</span>
+              <span style="font-size:11px;color:#4b5563;font-family:monospace;">9 yrs</span>
+              <span id="arr-job3" style="color:#6b7280;font-size:11px;">&#9660;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="exp-job3" style="display:none;padding:0 14px 12px 29px;">
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#f59e0b;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">Direct training-to-placement pipeline across construction &amp; healthcare</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#f59e0b;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">Converts Mindful Group graduates into placed, employed workers</span></div>
+        <div style="margin-top:10px;padding:8px 12px;background:rgba(245,158,11,0.06);border-radius:4px;border-left:2px solid #f59e0b;">
+          <div style="font-size:10px;color:#6b7280;margin-bottom:4px;">HOURS BREAKDOWN</div>
+          <div style="font-size:12px;color:#fcd34d;font-family:monospace;">9 yrs &times; 2,704 hrs = <strong style="color:#fff;">24,336 hours</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="job-row" id="job4">
+      <div class="job-trigger" onclick="toggleJob('job4')">
+        <div class="job-bar" style="background:#10b981;"></div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;">
+            <div>
+              <span style="font-size:13px;font-weight:500;color:#e5e7eb;">Founder</span>
+              <span style="font-size:12px;color:#9ca3af;"> &middot; The Black Entrepreneurship Society</span>
+              <span class="active-badge">Active</span>
+              <span class="new-badge">2025</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span class="hours-pill" style="background:rgba(16,185,129,0.15);border:0.5px solid rgba(16,185,129,0.3);color:#6ee7b7;">2,704 hrs</span>
+              <span style="font-size:11px;color:#4b5563;font-family:monospace;">2025&ndash;Present</span>
+              <span style="font-size:11px;color:#4b5563;font-family:monospace;">1 yr</span>
+              <span id="arr-job4" style="color:#6b7280;font-size:11px;">&#9660;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="exp-job4" style="display:none;padding:0 14px 12px 29px;">
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#10b981;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">Skool.com-based platform giving minority business owners access to world-class business tools</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#10b981;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">Closing the resource gap between minority founders and institutional-grade business infrastructure</span></div>
+        <div style="display:flex;align-items:flex-start;gap:7px;margin-bottom:5px;"><span style="color:#10b981;font-size:11px;margin-top:1px;">&#9670;</span><span style="font-size:12px;color:#9ca3af;">Community-driven learning &mdash; where access, knowledge, and networks compound together</span></div>
+        <div style="margin-top:10px;padding:8px 12px;background:rgba(16,185,129,0.06);border-radius:4px;border-left:2px solid #10b981;">
+          <div style="font-size:10px;color:#6b7280;margin-bottom:4px;">HOURS BREAKDOWN</div>
+          <div style="font-size:12px;color:#6ee7b7;font-family:monospace;">1 yr &times; 2,704 hrs = <strong style="color:#fff;">2,704 hours</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;padding:12px 16px;background:rgba(255,255,255,0.02);border-radius:6px;border:0.5px solid rgba(255,255,255,0.06);">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        <div style="font-size:11px;color:#6b7280;">Total Verified Career Hours</div>
+        <div style="font-size:20px;font-weight:700;color:#fff;font-family:monospace;">148,720 <span style="font-size:12px;color:#6b7280;font-weight:400;">hrs</span></div>
+      </div>
+      <div style="font-size:10px;color:#4b5563;font-family:monospace;">Base: 2,080 hrs/yr &nbsp;&middot;&nbsp; Multiplier: 1.30&times; &nbsp;&middot;&nbsp; Verified rate: 2,704 hrs/yr &nbsp;&middot;&nbsp; Roles run concurrently</div>
+    </div>
+  </div>
+
+  <div style="padding:10px 24px;background:#080b12;border-top:0.5px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:10px;color:#374151;">Real-Time Resume&#8482; by <span style="color:#9b59f5;">REIGN IWOS</span> &middot; Mindful Measures Inc.</span>
+    <span style="font-size:10px;color:#374151;font-family:monospace;">REIGNOS.AI</span>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+document.getElementById('rtr-date').textContent=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+
+function toggleJob(id){
+  var exp=document.getElementById('exp-'+id);
+  var arr=document.getElementById('arr-'+id);
+  var row=document.getElementById(id);
+  var open=exp.style.display==='block';
+  exp.style.display=open?'none':'block';
+  arr.innerHTML=open?'&#9660;':'&#9650;';
+  row.classList.toggle('open',!open);
+}
+
+var datasets={
+  impact:{data:[18,28,40,52,65,74,80,86,91,96,99],color:'#3b6fe8'},
+  hours: {data:[0,8,22,38,54,68,84,97,111,130,149],color:'#9b59f5'},
+  orgs:  {data:[0,0,0,0,0,1,2,3,4,6,7],color:'#10b981'}
+};
+var labels=['2003','2006','2009','2012','2014','2016','2018','2020','2022','2024','2026'];
+
+var ctx=document.getElementById('tl-chart').getContext('2d');
+var chart=new Chart(ctx,{
+  type:'line',
+  data:{
+    labels:labels,
+    datasets:[{
+      data:datasets.impact.data,
+      borderColor:datasets.impact.color,
+      backgroundColor:datasets.impact.color+'18',
+      fill:true,tension:0.3,pointRadius:3,
+      pointBackgroundColor:datasets.impact.color,borderWidth:2
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:true,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{ticks:{color:'#4b5563',font:{size:10}},grid:{color:'#1f2937'}},
+      y:{ticks:{color:'#4b5563',font:{size:10}},grid:{color:'#1f2937'}}
+    }
+  }
+});
+
+function setTab(el,key){
+  document.querySelectorAll('.metric-tab').forEach(function(b){b.classList.remove('active');});
+  el.classList.add('active');
+  var d=datasets[key];
+  chart.data.datasets[0].data=d.data;
+  chart.data.datasets[0].borderColor=d.color;
+  chart.data.datasets[0].backgroundColor=d.color+'18';
+  chart.data.datasets[0].pointBackgroundColor=d.color;
+  chart.update();
+}
+
+(function(){
+  var canvas=document.getElementById('gauge-canvas');
+  var c=canvas.getContext('2d');
+  var cx=70,cy=72,r=52;
+  var startAngle=Math.PI*0.75;
+  var totalSweep=Math.PI*1.5;
+  var endAngle=startAngle+totalSweep;
+  c.beginPath();c.arc(cx,cy,r,startAngle,endAngle);
+  c.strokeStyle='#1f2937';c.lineWidth=8;c.lineCap='round';c.stroke();
+  var zoneColors=['#e74c3c','#e67e22','#f1c40f','#2ecc71','#27ae60'];
+  var zoneSize=totalSweep/5;
+  for(var i=0;i<5;i++){
+    var zS=startAngle+i*zoneSize+0.03;
+    var zE=startAngle+(i+1)*zoneSize-0.03;
+    c.beginPath();c.arc(cx,cy,r,zS,zE);
+    c.strokeStyle=zoneColors[i];c.lineWidth=7;c.lineCap='round';c.stroke();
+  }
+  var pct=9.1/10;
+  var needleAngle=startAngle+pct*totalSweep;
+  var nx=cx+38*Math.cos(needleAngle);
+  var ny=cy+38*Math.sin(needleAngle);
+  c.beginPath();c.moveTo(cx,cy);c.lineTo(nx,ny);
+  c.strokeStyle='#ffffff';c.lineWidth=2.5;c.lineCap='round';c.stroke();
+  c.beginPath();c.arc(cx,cy,5,0,Math.PI*2);c.fillStyle='#ffffff';c.fill();
+})();
+</script>
