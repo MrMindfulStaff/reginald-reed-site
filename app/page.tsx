@@ -96,6 +96,7 @@ function AnimatedCounter({
 }
 
 export default function Home() {
+  const [showRTR, setShowRTR] = useState(false);
   return (
     <>
       {/* Hero */}
@@ -203,11 +204,9 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.15 }}
         >
-          <a
-            href="/rtr"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex flex-col items-center justify-center gap-4 hover:opacity-90 transition-opacity"
+          <button
+            onClick={() => setShowRTR(true)}
+            className="group flex flex-col items-center justify-center gap-4 hover:opacity-90 transition-opacity mx-auto cursor-pointer bg-transparent border-none"
           >
             <Image
               src="/images/rtr-logo.png"
@@ -219,8 +218,34 @@ export default function Home() {
             <span className="text-gold text-sm uppercase tracking-[0.2em] group-hover:text-gold-light transition-colors">
               See My Real-Time Resume →
             </span>
-          </a>
+          </button>
         </motion.div>
+
+        {/* RTR Modal */}
+        {showRTR && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+            onClick={() => setShowRTR(false)}
+          >
+            <div
+              className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowRTR(false)}
+                className="sticky top-4 float-right z-10 mr-4 mt-2 w-10 h-10 rounded-full bg-obsidian-light/90 border border-silver/20 text-silver hover:text-white hover:border-gold transition-colors flex items-center justify-center text-xl cursor-pointer"
+              >
+                ×
+              </button>
+              <iframe
+                src="/rtr.html"
+                className="w-full border-0 rounded-xl"
+                style={{ minHeight: "85vh" }}
+                title="Real-Time Resume"
+              />
+            </div>
+          </div>
+        )}
 
         {/* Metrics — full width below hero */}
         <div className="max-w-5xl mx-auto px-6 relative z-10 pb-16">
