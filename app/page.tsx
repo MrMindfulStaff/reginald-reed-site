@@ -198,7 +198,7 @@ export default function Home() {
 
         {/* Real-Time Resume CTA */}
         <motion.div
-          className="max-w-5xl mx-auto px-6 relative z-10 pb-12"
+          className="max-w-5xl mx-auto px-6 relative z-10 pb-16"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.15 }}
@@ -207,19 +207,18 @@ export default function Home() {
             href="#"
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center justify-center gap-4 border border-gold/20 hover:border-gold/50 py-4 px-6 transition-all duration-300"
+            className="group flex flex-col items-center justify-center gap-4 hover:opacity-90 transition-opacity"
           >
             <Image
               src="/images/rtr-logo.png"
               alt="Real-Time Resume"
-              width={48}
-              height={48}
-              className="shrink-0"
+              width={120}
+              height={120}
+              className="shrink-0 group-hover:scale-105 transition-transform duration-300"
             />
-            <span className="text-gold text-sm uppercase tracking-wider group-hover:text-gold-light transition-colors">
-              See My Real-Time Resume
+            <span className="text-gold text-sm uppercase tracking-[0.2em] group-hover:text-gold-light transition-colors">
+              See My Real-Time Resume →
             </span>
-            <span className="text-gold/40 group-hover:text-gold/70 transition-colors">→</span>
           </a>
         </motion.div>
 
