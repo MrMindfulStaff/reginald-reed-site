@@ -78,6 +78,39 @@ const entities = [
     ],
     metric: "Last-mile transportation removing mobility barriers",
   },
+  {
+    num: "06",
+    name: "The Black Entrepreneurship Society",
+    type: "Education | Community",
+    tagline: "Stop decorating. Start building.",
+    description:
+      "The education and IP arm of House Reed. A Skool-based business community equipping minority entrepreneurs with practical infrastructure — legal, financial, operational, and strategic — organized into 13 specialized classrooms. Each classroom includes step-by-step lessons, fillable templates, SOPs, and a custom AI assistant. $50/month membership with a 30% recurring affiliate program that turns members into partners.",
+    feeds: [
+      "House Reed ecosystem (codified business methodology)",
+      "Community members (business infrastructure & capital access)",
+    ],
+    receives: [
+      "All House Reed entities (operational knowledge & IP)",
+      "Member-to-affiliate conversion (growth engine)",
+    ],
+    metric: "13 classrooms covering legal, financial, operations, scaling & exit planning",
+    url: "https://www.skool.com/blackwealth",
+  },
+  {
+    num: "07",
+    name: "House Reed Holdings LLC",
+    type: "Holding Company",
+    tagline: "The governance layer that holds the ecosystem together",
+    description:
+      "The parent holding structure unifying all House Reed entities under one strategic umbrella. Provides governance, shared services, and capital allocation across the ecosystem — ensuring every entity compounds into the next.",
+    feeds: [
+      "All entities (strategic governance & capital allocation)",
+    ],
+    receives: [
+      "All entities (revenue, data, strategic intelligence)",
+    ],
+    metric: "7 integrated entities under one governance structure",
+  },
 ];
 
 export default function Ecosystem() {
@@ -93,7 +126,7 @@ export default function Ecosystem() {
             The Ecosystem
           </h1>
           <p className="text-silver text-lg max-w-2xl mx-auto">
-            Five entities. One interconnected system. Every output becomes an
+            Seven entities. One interconnected system. Every output becomes an
             input. Every entity feeds the next. This is how you reverse poverty
             at the infrastructure level.
           </p>
@@ -119,7 +152,7 @@ export default function Ecosystem() {
               <span className="text-ivory">More Training</span>
             </div>
             <p className="text-silver text-xs mt-6">
-              Supported by: Childcare + Transportation + AI Intelligence
+              Supported by: Childcare + Transportation + AI Intelligence + Business Education
             </p>
           </div>
         </AnimatedSection>
