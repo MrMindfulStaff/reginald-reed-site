@@ -99,7 +99,7 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="min-h-screen flex items-center relative overflow-hidden">
+      <section className="min-h-screen flex flex-col justify-center relative overflow-hidden">
         {/* Background grid */}
         <div className="absolute inset-0 opacity-5">
           <div
@@ -198,7 +198,7 @@ export default function Home() {
 
         {/* Real-Time Resume CTA */}
         <motion.div
-          className="max-w-5xl mx-auto px-6 relative z-10 pb-16"
+          className="max-w-5xl mx-auto px-6 relative z-10 py-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 1.15 }}
