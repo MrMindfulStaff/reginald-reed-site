@@ -233,9 +233,9 @@ export default function Home() {
             >
               <button
                 onClick={() => setShowRTR(false)}
-                className="sticky top-4 float-right z-10 mr-4 mt-2 w-10 h-10 rounded-full bg-obsidian-light/90 border border-silver/20 text-silver hover:text-white hover:border-gold transition-colors flex items-center justify-center text-xl cursor-pointer"
+                className="fixed top-6 right-6 z-[60] w-12 h-12 rounded-full bg-obsidian border-2 border-gold text-gold hover:bg-gold hover:text-obsidian transition-all flex items-center justify-center text-2xl font-bold cursor-pointer shadow-lg"
               >
-                ×
+                ✕
               </button>
               <iframe
                 src="/rtr.html"
