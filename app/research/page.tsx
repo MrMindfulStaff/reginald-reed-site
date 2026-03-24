@@ -663,7 +663,7 @@ export default function Research() {
               </div>
 
               {/* What Makes It Different */}
-              <div>
+              <div className="mb-12">
                 <p className="text-gold text-xs uppercase tracking-[0.3em] mb-6">
                   What Makes It Different from Standard AI Prompting
                 </p>
@@ -694,6 +694,23 @@ export default function Research() {
                     </tbody>
                   </table>
                 </div>
+              </div>
+
+              {/* CTA */}
+              <div className="text-center border-t border-gold/10 pt-10">
+                <p className="text-ivory font-heading text-lg mb-3">
+                  Want a council built for your organization?
+                </p>
+                <p className="text-silver text-sm max-w-lg mx-auto mb-6">
+                  Every Sentilis-derived system is custom-engineered to your mission,
+                  revenue model, and decision architecture.
+                </p>
+                <Link
+                  href="/contact"
+                  className="inline-block px-10 py-4 bg-gold text-obsidian font-semibold text-sm uppercase tracking-wider hover:bg-gold-light transition-colors"
+                >
+                  Request a Custom AI Build
+                </Link>
               </div>
             </Accordion>
           </AnimatedSection>
