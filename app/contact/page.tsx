@@ -14,10 +14,36 @@ const inquiryTypes = [
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setSending(true);
+    setError("");
+
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    formData.append("access_key", "be5fa4ea-1cbc-403e-826d-9ccad304b025");
+    formData.append("subject", `New Inquiry: ${formData.get("inquiry_type")}`);
+    formData.append("from_name", "HouseReed.com Contact Form");
+
+    try {
+      const res = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSubmitted(true);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSending(false);
+    }
   }
 
   return (
@@ -62,6 +88,7 @@ export default function Contact() {
                     </label>
                     <input
                       type="text"
+                      name="name"
                       required
                       className="w-full bg-obsidian-light border border-gold/20 px-4 py-3 text-ivory text-sm focus:border-gold focus:outline-none transition-colors"
                       placeholder="Your name"
@@ -73,6 +100,7 @@ export default function Contact() {
                     </label>
                     <input
                       type="email"
+                      name="email"
                       required
                       className="w-full bg-obsidian-light border border-gold/20 px-4 py-3 text-ivory text-sm focus:border-gold focus:outline-none transition-colors"
                       placeholder="your@email.com"
@@ -86,6 +114,7 @@ export default function Contact() {
                   </label>
                   <input
                     type="text"
+                    name="organization"
                     className="w-full bg-obsidian-light border border-gold/20 px-4 py-3 text-ivory text-sm focus:border-gold focus:outline-none transition-colors"
                     placeholder="Company or organization"
                   />
@@ -96,6 +125,7 @@ export default function Contact() {
                     Inquiry Type *
                   </label>
                   <select
+                    name="inquiry_type"
                     required
                     className="w-full bg-obsidian-light border border-gold/20 px-4 py-3 text-ivory text-sm focus:border-gold focus:outline-none transition-colors appearance-none"
                   >
@@ -113,6 +143,7 @@ export default function Contact() {
                     Message *
                   </label>
                   <textarea
+                    name="message"
                     required
                     rows={6}
                     className="w-full bg-obsidian-light border border-gold/20 px-4 py-3 text-ivory text-sm focus:border-gold focus:outline-none transition-colors resize-none"
@@ -120,11 +151,16 @@ export default function Contact() {
                   />
                 </div>
 
+                {error && (
+                  <p className="text-red-400 text-sm">{error}</p>
+                )}
+
                 <button
                   type="submit"
-                  className="px-10 py-4 bg-gold text-obsidian font-semibold text-sm uppercase tracking-wider hover:bg-gold-light transition-colors w-full md:w-auto"
+                  disabled={sending}
+                  className="px-10 py-4 bg-gold text-obsidian font-semibold text-sm uppercase tracking-wider hover:bg-gold-light transition-colors w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {sending ? "Sending..." : "Send Message"}
                 </button>
               </form>
             )}
@@ -169,17 +205,6 @@ export default function Contact() {
                 Direct Contact
               </h3>
               <div className="space-y-3 text-silver text-sm">
-                <p>
-                  <span className="text-gold/60 uppercase tracking-wider text-xs block mb-1">
-                    Email
-                  </span>
-                  <a
-                    href="mailto:reginald@mindfulstaff.com"
-                    className="hover:text-gold transition-colors"
-                  >
-                    reginald@mindfulstaff.com
-                  </a>
-                </p>
                 <p>
                   <span className="text-gold/60 uppercase tracking-wider text-xs block mb-1">
                     Based In
