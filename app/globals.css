@@ -9,6 +9,8 @@
   --color-silver: #B0B0B0;
   --color-ivory: #F5F0E8;
   --color-ivory-dark: #E8E0D0;
+  --color-holo: #4FD8E8;
+  --color-holo-deep: #2BB8C8;
   --font-heading: "Georgia", serif;
   --font-body: "Inter", system-ui, sans-serif;
 }
@@ -83,4 +85,95 @@ main {
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+/* ---- Holographic layer ---- */
+
+/* Faint cyan scanlines over the whole page — sells the "projection" feel */
+.holo-scanlines::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(79, 216, 232, 0.035) 0px,
+    rgba(79, 216, 232, 0.035) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: screen;
+  animation: scanmove 9s linear infinite;
+}
+@keyframes scanmove {
+  from { background-position: 0 0; }
+  to { background-position: 0 6px; }
+}
+
+/* Glassmorphic HUD panel */
+/* Backdrop blur applied via Tailwind utility (backdrop-blur-md) on the element,
+   because Tailwind v4's Lightning CSS strips a hand-written backdrop-filter here. */
+.holo-glass {
+  background: rgba(16, 16, 16, 0.42);
+  border: 1px solid rgba(200, 163, 95, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(79, 216, 232, 0.06) inset,
+    0 8px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* HUD corner brackets on a positioned container */
+.holo-corners::before,
+.holo-corners::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--color-holo);
+  opacity: 0.7;
+  pointer-events: none;
+}
+.holo-corners::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+.holo-corners::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Animated gold→holo sheen for headings */
+.holo-text {
+  background: linear-gradient(
+    100deg,
+    var(--color-gold) 0%,
+    var(--color-ivory) 35%,
+    var(--color-holo) 55%,
+    var(--color-gold) 80%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: holoSheen 10s linear infinite;
+}
+@keyframes holoSheen {
+  from { background-position: 0% center; }
+  to { background-position: 220% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holo-scanlines::after,
+  .holo-text { animation: none; }
+}
+
+/* Pages embedded inside the hub panel were built full-screen — trim the
+   first section's top nav-padding so it sits nicely in the panel. */
+.hub-embed section:first-of-type {
+  padding-top: 2.5rem;
 }

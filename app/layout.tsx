@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import CanvasRoot from "@/components/three/CanvasRoot";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
@@ -41,7 +42,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="antialiased">
+      <body className="antialiased holo-scanlines">
+        <CanvasRoot />
         <Navigation />
         <main>{children}</main>
         <Footer />
