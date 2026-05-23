@@ -223,7 +223,7 @@ export default function HubScene() {
           <button
             data-hub-back
             onClick={back}
-            className="absolute top-5 right-5 z-10 px-4 py-2 bg-obsidian/80 border border-gold/50 text-gold text-xs uppercase tracking-wider hover:bg-gold hover:text-obsidian transition-colors cursor-pointer"
+            className="absolute top-20 right-6 z-10 px-5 py-2.5 bg-obsidian/85 border border-gold/60 text-gold text-xs uppercase tracking-wider hover:bg-gold hover:text-obsidian transition-colors cursor-pointer shadow-lg"
           >
             ✕ Back to orbit
           </button>
