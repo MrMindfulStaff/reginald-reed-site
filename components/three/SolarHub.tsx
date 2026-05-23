@@ -37,15 +37,16 @@ interface PlanetDef {
   axial: number; // axial tilt of the planet
   clouds?: boolean;
   ring?: boolean;
+  atmosphere?: string;
 }
 
 const PLANETS: PlanetDef[] = [
-  { idx: 1, radius: 3.8, size: 0.42, speed: 0.24, tilt: 0.06, phase: 0.0, texture: "/textures/2k_earth_daymap.jpg", clouds: true, axial: 0.41 },
+  { idx: 1, radius: 3.8, size: 0.42, speed: 0.24, tilt: 0.06, phase: 0.0, texture: "/textures/2k_earth_daymap.jpg", clouds: true, axial: 0.41, atmosphere: "#5fa8ff" },
   { idx: 2, radius: 5.2, size: 0.34, speed: 0.18, tilt: 0.12, phase: 1.0, texture: "/textures/2k_mars.jpg", axial: 0.44 },
   { idx: 3, radius: 6.8, size: 0.64, speed: 0.13, tilt: -0.08, phase: 2.1, texture: "/textures/2k_jupiter.jpg", axial: 0.05 },
-  { idx: 4, radius: 8.4, size: 0.46, speed: 0.1, tilt: 0.15, phase: 3.2, texture: "/textures/2k_neptune.jpg", axial: 0.49 },
+  { idx: 4, radius: 8.4, size: 0.46, speed: 0.1, tilt: 0.15, phase: 3.2, texture: "/textures/2k_neptune.jpg", axial: 0.49, atmosphere: "#4a7bd0" },
   { idx: 5, radius: 10.0, size: 0.52, speed: 0.085, tilt: -0.13, phase: 4.3, texture: "/textures/2k_saturn.jpg", ring: true, axial: 0.47 },
-  { idx: 6, radius: 11.6, size: 0.44, speed: 0.07, tilt: 0.1, phase: 5.4, texture: "/textures/2k_uranus.jpg", axial: 1.71 },
+  { idx: 6, radius: 11.6, size: 0.44, speed: 0.07, tilt: 0.1, phase: 5.4, texture: "/textures/2k_uranus.jpg", axial: 1.71, atmosphere: "#a6e3e3" },
 ];
 
 const STAR_RADIUS = 1.6;
@@ -118,6 +119,37 @@ const coronaFrag = /* glsl */ `
   }
 `;
 
+// Fresnel atmosphere shell (rim glow around a planet's limb).
+const atmFrag = /* glsl */ `
+  varying vec3 vN; varying vec3 vV;
+  uniform vec3 uColor;
+  void main(){
+    float f = pow(1.0 - abs(dot(vN, vV)), 3.0);
+    gl_FragColor = vec4(uColor, f * 0.9);
+  }
+`;
+
+function Atmosphere({ size, color }: { size: number; color: string }) {
+  const uniforms = useMemo(
+    () => ({ uColor: { value: new THREE.Color(color) } }),
+    [color]
+  );
+  return (
+    <mesh scale={1.18}>
+      <sphereGeometry args={[size, 32, 32]} />
+      <shaderMaterial
+        vertexShader={coronaVert}
+        fragmentShader={atmFrag}
+        uniforms={uniforms}
+        transparent
+        blending={THREE.AdditiveBlending}
+        side={THREE.BackSide}
+        depthWrite={false}
+      />
+    </mesh>
+  );
+}
+
 function Star({
   active,
   paused,
@@ -128,6 +160,7 @@ function Star({
   onFocus: (i: number, pos: THREE.Vector3) => void;
 }) {
   const mesh = useRef<THREE.Mesh>(null);
+  const sprite = useRef<THREE.Sprite>(null);
   const [hover, setHover] = useState(false);
 
   const sunMap = useTexture("/textures/2k_sun.jpg");
@@ -152,8 +185,12 @@ function Star({
     return new THREE.CanvasTexture(c);
   }, []);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (mesh.current && !paused) mesh.current.rotation.y += delta * 0.025;
+    if (sprite.current) {
+      const s = 9 + Math.sin(state.clock.elapsedTime * 0.5) * 0.5;
+      sprite.current.scale.set(s, s, 1);
+    }
   });
 
   return (
@@ -161,7 +198,7 @@ function Star({
       <pointLight position={[0, 0, 0]} intensity={3} decay={0} color="#fff1d6" />
 
       {/* glow halo */}
-      <sprite scale={[9, 9, 1]}>
+      <sprite ref={sprite} scale={[9, 9, 1]}>
         <spriteMaterial
           map={glowTex}
           transparent
@@ -416,7 +453,9 @@ function Planet({
   const orbit = useRef<THREE.Group>(null);
   const body = useRef<THREE.Mesh>(null);
   const locator = useRef<THREE.Group>(null);
+  const tiltGroup = useRef<THREE.Group>(null);
   const angle = useRef(p.phase);
+  const tmp = useMemo(() => new THREE.Vector3(), []);
   const [hover, setHover] = useState(false);
 
   const map = useTexture(p.texture);
@@ -426,6 +465,10 @@ function Planet({
     if (!paused) angle.current += delta * p.speed;
     if (orbit.current) orbit.current.rotation.y = angle.current;
     if (body.current && !paused) body.current.rotation.y += delta * 0.25;
+    if (tiltGroup.current) {
+      const t = hover || active ? 1.14 : 1;
+      tiltGroup.current.scale.lerp(tmp.set(t, t, t), 0.12);
+    }
   });
 
   return (
@@ -455,7 +498,7 @@ function Planet({
           </mesh>
 
           {/* axial-tilted planet */}
-          <group rotation={[0, 0, p.axial]}>
+          <group ref={tiltGroup} rotation={[0, 0, p.axial]}>
             <mesh ref={body}>
               <sphereGeometry args={[p.size, 48, 48]} />
               <meshStandardMaterial
@@ -469,6 +512,7 @@ function Planet({
             </mesh>
             {p.clouds && <CloudLayer size={p.size} />}
             {p.ring && <SaturnRing size={p.size} />}
+            {p.atmosphere && <Atmosphere size={p.size} color={p.atmosphere} />}
           </group>
 
           {/* selection halo */}
@@ -508,6 +552,7 @@ function Planet({
               style={{
                 whiteSpace: "nowrap",
                 color: hover || active ? "#4FD8E8" : "#F5F0E8",
+                opacity: hover || active ? 1 : 0.7,
                 fontFamily: "Georgia, serif",
                 fontSize: "14px",
                 letterSpacing: "0.16em",
@@ -515,6 +560,7 @@ function Planet({
                 textShadow: "0 0 12px rgba(0,0,0,0.95)",
                 pointerEvents: "none",
                 userSelect: "none",
+                transition: "color 0.2s, opacity 0.2s",
               }}
             >
               {page.name}

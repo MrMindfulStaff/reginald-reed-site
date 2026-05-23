@@ -60,6 +60,18 @@ export default function HubScene() {
     }
   }, [showPage]);
 
+  // Slower, more cinematic camera transitions once the controls exist.
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      if (controls.current) {
+        controls.current.smoothTime = 0.55;
+        controls.current.draggingSmoothTime = 0.18;
+        window.clearInterval(id);
+      }
+    }, 60);
+    return () => window.clearInterval(id);
+  }, []);
+
   const frameEcosystem = useCallback((pos: THREE.Vector3) => {
     const dir = pos.clone().normalize();
     const cam = pos
@@ -192,6 +204,15 @@ export default function HubScene() {
           <AutoOrbit controls={controls} active={focused !== null} />
         </Canvas>
       </div>
+
+      {/* Cinematic vignette */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 45%, transparent 48%, rgba(0,0,0,0.55) 100%)",
+        }}
+      />
 
       {/* Idle hint + attribution */}
       {focused === null && (
