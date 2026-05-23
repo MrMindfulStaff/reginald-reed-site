@@ -211,8 +211,8 @@ export default function HubScene() {
           <div className="absolute bottom-7 left-1/2 -translate-x-1/2 text-silver/70 text-xs uppercase tracking-[0.3em] pointer-events-none">
             Drag to rotate · Click the star or a planet
           </div>
-          <div className="absolute bottom-2 right-3 text-silver/30 text-[10px] tracking-wide pointer-events-none">
-            Planet textures: Solar System Scope · CC BY 4.0
+          <div className="absolute bottom-2 right-3 text-silver/30 text-[10px] tracking-wide pointer-events-none text-right">
+            Milky Way: ESO/S. Brunier · Planet textures: Solar System Scope · CC BY 4.0
           </div>
         </>
       )}

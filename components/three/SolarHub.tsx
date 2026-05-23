@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { Html, useTexture } from "@react-three/drei";
+import { Html, useTexture, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import StarField from "./StarField";
 import { PLANET_MOONS, type MoonContent } from "@/lib/hubMoons";
@@ -93,18 +93,19 @@ export function nodePosition(idx: number): THREE.Vector3 {
 /* ---------------- Milky Way background ---------------- */
 
 function Background() {
-  const tex = useTexture("/textures/2k_stars_milky_way.jpg");
-  const { scene } = useThree();
+  const tex = useTexture("/textures/milkyway_hd.jpg");
+  const { scene, gl } = useThree();
   useEffect(() => {
     tex.mapping = THREE.EquirectangularReflectionMapping;
     tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = gl.capabilities.getMaxAnisotropy();
     const prev = scene.background;
     scene.background = tex;
-    scene.backgroundIntensity = 0.35;
+    scene.backgroundIntensity = 0.6;
     return () => {
       scene.background = prev;
     };
-  }, [tex, scene]);
+  }, [tex, scene, gl]);
   return null;
 }
 
@@ -609,6 +610,8 @@ export default function SolarHub({
   return (
     <group>
       <Background />
+      {/* Dense 3D star field for depth/parallax over the photo background */}
+      <Stars radius={140} depth={60} count={5000} factor={3.5} saturation={0} fade speed={0.4} />
       <StarField />
       <Star active={focused === 0} paused={paused} onFocus={onFocus} />
       {PLANETS.map((p) => (
