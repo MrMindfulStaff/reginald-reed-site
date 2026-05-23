@@ -5,6 +5,10 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { Html, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import StarField from "./StarField";
+import { ECOSYSTEM_ENTITIES } from "@/lib/ecosystem";
+
+/** PAGES index of the Ecosystem planet (the one with moons). */
+export const ECO_INDEX = 3;
 
 export interface HubPage {
   name: string;
@@ -45,6 +49,22 @@ const PLANETS: PlanetDef[] = [
 ];
 
 const STAR_RADIUS = 1.6;
+
+/* ---- Ecosystem moons (one per entity) ---- */
+const MOON_COLORS = [
+  "#C8A35F", "#5fb8a8", "#4FD8E8", "#d9b08c", "#9f86c0", "#7f9fd0", "#F5F0E8",
+];
+const MOONS = ECOSYSTEM_ENTITIES.map((e, i) => ({
+  idx: i,
+  short: e.short,
+  radius: 1.05 + i * 0.26,
+  size: 0.07,
+  speed: 0.5 - i * 0.045,
+  tilt: (i % 2 === 0 ? 1 : -1) * (0.18 + i * 0.04),
+  phase: (i / ECOSYSTEM_ENTITIES.length) * Math.PI * 2,
+  color: MOON_COLORS[i % MOON_COLORS.length],
+}));
+type MoonDef = (typeof MOONS)[number];
 
 /** Nominal world position of a node (for keyboard-triggered focus). */
 export function nodePosition(idx: number): THREE.Vector3 {
@@ -287,6 +307,85 @@ function SaturnRing({ size }: { size: number }) {
   );
 }
 
+/* ---------------- Moon (ecosystem entity) ---------------- */
+
+function Moon({
+  m,
+  frozen,
+  active,
+  onPick,
+}: {
+  m: MoonDef;
+  frozen: boolean;
+  active: boolean;
+  onPick: (idx: number, worldPos: THREE.Vector3) => void;
+}) {
+  const orbit = useRef<THREE.Group>(null);
+  const moon = useRef<THREE.Mesh>(null);
+  const angle = useRef(m.phase);
+  const [hover, setHover] = useState(false);
+
+  useFrame((_, delta) => {
+    if (!frozen) angle.current += delta * m.speed;
+    if (orbit.current) orbit.current.rotation.y = angle.current;
+  });
+
+  return (
+    <group rotation={[m.tilt, 0, 0]}>
+      <group ref={orbit}>
+        <group position={[m.radius, 0, 0]}>
+          <mesh
+            onPointerOver={(e) => {
+              e.stopPropagation();
+              setHover(true);
+              document.body.style.cursor = "pointer";
+            }}
+            onPointerOut={() => {
+              setHover(false);
+              document.body.style.cursor = "auto";
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              const w = new THREE.Vector3();
+              moon.current?.getWorldPosition(w);
+              onPick(m.idx, w);
+            }}
+          >
+            <sphereGeometry args={[m.size + 0.2, 12, 12]} />
+            <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+          </mesh>
+          <mesh ref={moon}>
+            <sphereGeometry args={[m.size, 24, 24]} />
+            <meshStandardMaterial
+              color={m.color}
+              emissive={m.color}
+              emissiveIntensity={hover || active ? 0.7 : 0.3}
+              roughness={0.6}
+            />
+          </mesh>
+          <Html center distanceFactor={5} position={[0, m.size + 0.14, 0]}>
+            <div
+              style={{
+                whiteSpace: "nowrap",
+                color: hover || active ? "#4FD8E8" : "#F5F0E8",
+                fontFamily: "Georgia, serif",
+                fontSize: "12px",
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                textShadow: "0 0 10px rgba(0,0,0,0.95)",
+                pointerEvents: "none",
+                userSelect: "none",
+              }}
+            >
+              {m.short}
+            </div>
+          </Html>
+        </group>
+      </group>
+    </group>
+  );
+}
+
 /* ---------------- Planet ---------------- */
 
 function Planet({
@@ -295,12 +394,24 @@ function Planet({
   active,
   paused,
   onFocus,
+  revealed = false,
+  frozenMoons = false,
+  activeMoon = null,
+  onFocusMoon,
 }: {
   p: PlanetDef;
   page: HubPage;
   active: boolean;
   paused: boolean;
   onFocus: (i: number, pos: THREE.Vector3) => void;
+  revealed?: boolean;
+  frozenMoons?: boolean;
+  activeMoon?: number | null;
+  onFocusMoon?: (
+    idx: number,
+    moonWorld: THREE.Vector3,
+    planetWorld: THREE.Vector3
+  ) => void;
 }) {
   const orbit = useRef<THREE.Group>(null);
   const body = useRef<THREE.Mesh>(null);
@@ -375,6 +486,23 @@ function Planet({
             </mesh>
           )}
 
+          {/* Ecosystem moons (one per entity), revealed when the planet is focused */}
+          {p.idx === ECO_INDEX &&
+            revealed &&
+            MOONS.map((m) => (
+              <Moon
+                key={m.idx}
+                m={m}
+                frozen={frozenMoons}
+                active={activeMoon === m.idx}
+                onPick={(mi, mwp) => {
+                  const pwp = new THREE.Vector3();
+                  locator.current?.getWorldPosition(pwp);
+                  onFocusMoon?.(mi, mwp, pwp);
+                }}
+              />
+            ))}
+
           <Html center distanceFactor={13} position={[0, p.size + 0.55, 0]}>
             <div
               style={{
@@ -404,10 +532,20 @@ export default function SolarHub({
   focused,
   paused,
   onFocus,
+  moonsRevealed = false,
+  moon = null,
+  onFocusMoon,
 }: {
   focused: number | null;
   paused: boolean;
   onFocus: (i: number, pos: THREE.Vector3) => void;
+  moonsRevealed?: boolean;
+  moon?: number | null;
+  onFocusMoon?: (
+    idx: number,
+    moonWorld: THREE.Vector3,
+    planetWorld: THREE.Vector3
+  ) => void;
 }) {
   return (
     <group>
@@ -423,6 +561,10 @@ export default function SolarHub({
             active={focused === p.idx}
             paused={paused}
             onFocus={onFocus}
+            revealed={p.idx === ECO_INDEX && moonsRevealed}
+            frozenMoons={moon !== null}
+            activeMoon={moon}
+            onFocusMoon={onFocusMoon}
           />
         </group>
       ))}

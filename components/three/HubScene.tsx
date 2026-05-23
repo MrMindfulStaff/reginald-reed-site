@@ -5,7 +5,8 @@ import dynamic from "next/dynamic";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { CameraControls } from "@react-three/drei";
 import * as THREE from "three";
-import SolarHub, { PAGES, nodePosition } from "./SolarHub";
+import SolarHub, { PAGES, ECO_INDEX, nodePosition } from "./SolarHub";
+import { ECOSYSTEM_ENTITIES } from "@/lib/ecosystem";
 
 // Real page components, embedded directly (no iframe → no extra WebGL context,
 // no full-app reload, no navigation escape). Code-split per node.
@@ -17,6 +18,8 @@ const EMBEDDED: Record<string, React.ComponentType> = {
   "/media": dynamic(() => import("@/app/media/page")),
   "/blog": dynamic(() => import("@/app/blog/page")),
 };
+
+const ORBIT_CAM: [number, number, number] = [0, 6, 20];
 
 /** Gentle auto-orbit of the camera while nothing is focused. */
 function AutoOrbit({
@@ -36,7 +39,10 @@ function AutoOrbit({
 
 export default function HubScene() {
   const controls = useRef<CameraControls>(null);
+  const focusPos = useRef(new THREE.Vector3());
   const [focused, setFocused] = useState<number | null>(null);
+  const [moon, setMoon] = useState<number | null>(null);
+  const [ecoPage, setEcoPage] = useState(false); // ecosystem shown as full page (a11y path)
   const [showPage, setShowPage] = useState(false);
   const [frameloop, setFrameloop] = useState<"always" | "never">("always");
 
@@ -54,70 +60,170 @@ export default function HubScene() {
     }
   }, [showPage]);
 
-  const focus = useCallback((i: number, pos: THREE.Vector3) => {
-    setFocused(i);
-    if (i === 0) {
-      // The star (Home) — frame it off-centre rather than fly inside it.
-      controls.current?.setLookAt(3.6, 1.7, 4.6, 0, 0, 0, true);
-    } else {
-      const dir = pos.clone().normalize();
-      const cam = pos.clone().add(dir.multiplyScalar(2.4)).add(new THREE.Vector3(0, 0.7, 0));
-      controls.current?.setLookAt(cam.x, cam.y, cam.z, pos.x, pos.y, pos.z, true);
-    }
-    window.setTimeout(() => setShowPage(true), 800);
+  const frameEcosystem = useCallback((pos: THREE.Vector3) => {
+    const dir = pos.clone().normalize();
+    const cam = pos
+      .clone()
+      .add(dir.multiplyScalar(4.8))
+      .add(new THREE.Vector3(0, 1.2, 0));
+    controls.current?.setLookAt(cam.x, cam.y, cam.z, pos.x, pos.y, pos.z, true);
   }, []);
 
+  const focus = useCallback(
+    (i: number, pos: THREE.Vector3) => {
+      setFocused(i);
+      setMoon(null);
+      setEcoPage(false);
+      if (i === 0) {
+        controls.current?.setLookAt(3.6, 1.7, 4.6, 0, 0, 0, true);
+        window.setTimeout(() => setShowPage(true), 800);
+      } else if (i === ECO_INDEX) {
+        // Ecosystem → reveal moons (no page panel).
+        focusPos.current.copy(pos);
+        frameEcosystem(pos);
+      } else {
+        const dir = pos.clone().normalize();
+        const cam = pos
+          .clone()
+          .add(dir.multiplyScalar(2.4))
+          .add(new THREE.Vector3(0, 0.7, 0));
+        controls.current?.setLookAt(cam.x, cam.y, cam.z, pos.x, pos.y, pos.z, true);
+        window.setTimeout(() => setShowPage(true), 800);
+      }
+    },
+    [frameEcosystem]
+  );
+
+  // Keyboard / screen-reader entry point: Ecosystem opens the full page
+  // (all entities, accessible); everything else behaves like a click.
+  const openSection = useCallback(
+    (i: number) => {
+      if (i === ECO_INDEX) {
+        setFocused(ECO_INDEX);
+        setMoon(null);
+        setEcoPage(true);
+        const pos = nodePosition(ECO_INDEX);
+        const dir = pos.clone().normalize();
+        const cam = pos
+          .clone()
+          .add(dir.multiplyScalar(2.6))
+          .add(new THREE.Vector3(0, 0.7, 0));
+        controls.current?.setLookAt(cam.x, cam.y, cam.z, pos.x, pos.y, pos.z, true);
+        window.setTimeout(() => setShowPage(true), 800);
+      } else {
+        focus(i, nodePosition(i));
+      }
+    },
+    [focus]
+  );
+
+  const focusMoon = useCallback(
+    (mi: number, moonWorld: THREE.Vector3, planetWorld: THREE.Vector3) => {
+      setMoon(mi);
+      const dir = moonWorld.clone().sub(planetWorld).normalize();
+      const cam = moonWorld
+        .clone()
+        .add(dir.multiplyScalar(0.95))
+        .add(new THREE.Vector3(0, 0.25, 0));
+      controls.current?.setLookAt(
+        cam.x, cam.y, cam.z,
+        moonWorld.x, moonWorld.y, moonWorld.z,
+        true
+      );
+      window.setTimeout(() => setShowPage(true), 700);
+    },
+    []
+  );
+
   const back = useCallback(() => {
-    setShowPage(false);
-    setFocused(null);
-    controls.current?.setLookAt(0, 6, 20, 0, 0, 0, true);
-  }, []);
+    if (moon !== null) {
+      // Moon → back to the moons view.
+      setShowPage(false);
+      setMoon(null);
+      frameEcosystem(focusPos.current);
+    } else {
+      // Planet / star → back to orbit.
+      setShowPage(false);
+      setFocused(null);
+      setEcoPage(false);
+      controls.current?.setLookAt(...ORBIT_CAM, 0, 0, 0, true);
+    }
+  }, [moon, frameEcosystem]);
+
+  const moonsMode = focused === ECO_INDEX && !ecoPage;
+  const showEmbed =
+    focused !== null && focused !== 0 && (focused !== ECO_INDEX || ecoPage);
+  const entity = moon !== null ? ECOSYSTEM_ENTITIES[moon] : null;
 
   return (
     <div className="fixed inset-0 z-30 bg-obsidian">
-      {/* Accessible heading + section navigation for keyboard / screen readers.
-          Visually hidden; activates the same zoom-into-page flow. */}
+      {/* Accessible heading + section navigation for keyboard / screen readers. */}
       <h1 className="sr-only">
         Reginald Reed Jr. — interactive solar-system navigation
       </h1>
       <nav aria-label="Site sections" className="sr-only">
         {PAGES.map((p, i) => (
-          <button key={p.name} onClick={() => focus(i, nodePosition(i))}>
+          <button key={p.name} onClick={() => openSection(i)}>
             {i === 0 ? `${p.name} (introduction)` : p.name}
           </button>
         ))}
       </nav>
 
-      {/* Decorative 3D canvas — hidden from assistive tech (content lives in the
-          panels + the standard nav + the SSR fallback page). */}
+      {/* Decorative 3D canvas — hidden from assistive tech. */}
       <div aria-hidden="true" className="absolute inset-0">
         <Canvas
-          camera={{ position: [0, 6, 20], fov: 50 }}
+          camera={{ position: ORBIT_CAM, fov: 50 }}
           gl={{ antialias: true, powerPreference: "high-performance" }}
           dpr={[1, 1.5]}
           frameloop={frameloop}
         >
           <ambientLight intensity={0.18} />
           <Suspense fallback={null}>
-            <SolarHub focused={focused} paused={focused !== null} onFocus={focus} />
+            <SolarHub
+              focused={focused}
+              paused={focused !== null}
+              onFocus={focus}
+              moonsRevealed={moonsMode}
+              moon={moon}
+              onFocusMoon={focusMoon}
+            />
           </Suspense>
-          <CameraControls ref={controls} minDistance={1.2} maxDistance={42} />
+          <CameraControls ref={controls} minDistance={0.6} maxDistance={42} />
           <AutoOrbit controls={controls} active={focused !== null} />
         </Canvas>
       </div>
 
-      {/* Idle hint */}
+      {/* Idle hint + attribution */}
       {focused === null && (
-        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 text-silver/70 text-xs uppercase tracking-[0.3em] pointer-events-none">
-          Drag to rotate · Click the star or a planet
-        </div>
+        <>
+          <div className="absolute bottom-7 left-1/2 -translate-x-1/2 text-silver/70 text-xs uppercase tracking-[0.3em] pointer-events-none">
+            Drag to rotate · Click the star or a planet
+          </div>
+          <div className="absolute bottom-2 right-3 text-silver/30 text-[10px] tracking-wide pointer-events-none">
+            Planet textures: Solar System Scope · CC BY 4.0
+          </div>
+        </>
       )}
 
-      {/* Texture attribution (CC BY 4.0) */}
-      {focused === null && (
-        <div className="absolute bottom-2 right-3 text-silver/30 text-[10px] tracking-wide pointer-events-none">
-          Planet textures: Solar System Scope · CC BY 4.0
-        </div>
+      {/* Ecosystem moons mode — explore entities */}
+      {moonsMode && moon === null && (
+        <>
+          <button
+            data-hub-back
+            onClick={back}
+            className="absolute top-5 right-5 z-10 px-4 py-2 bg-obsidian/80 border border-gold/50 text-gold text-xs uppercase tracking-wider hover:bg-gold hover:text-obsidian transition-colors cursor-pointer"
+          >
+            ✕ Back to orbit
+          </button>
+          <div className="absolute bottom-7 left-1/2 -translate-x-1/2 text-center pointer-events-none">
+            <p className="text-holo text-sm uppercase tracking-[0.3em]">
+              The Ecosystem
+            </p>
+            <p className="text-silver/70 text-xs uppercase tracking-[0.25em] mt-2">
+              Click a moon — each is an entity
+            </p>
+          </div>
+        </>
       )}
 
       {/* Star identity card */}
@@ -156,8 +262,77 @@ export default function HubScene() {
         </div>
       )}
 
-      {/* Embedded page panel (planets) */}
-      {focused !== null && focused !== 0 && (
+      {/* Moon (entity) detail panel */}
+      {moonsMode && entity && (
+        <div
+          className={`absolute inset-0 flex items-center justify-center p-4 md:p-8 transition-opacity duration-500 ${
+            showPage ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          <div className="holo-glass holo-corners relative w-full max-w-3xl max-h-[86vh] overflow-y-auto p-8 md:p-12 rounded-sm">
+            <button
+              onClick={back}
+              data-hub-back
+              className="absolute top-3 right-3 z-10 px-4 py-2 bg-obsidian/80 border border-gold/50 text-gold text-xs uppercase tracking-wider hover:bg-gold hover:text-obsidian transition-colors cursor-pointer"
+            >
+              ✕ Back to moons
+            </button>
+            <p className="text-holo text-xs uppercase tracking-[0.25em] mb-3">
+              Ecosystem · Entity {entity.num}
+            </p>
+            <h2 className="holo-text font-heading text-3xl md:text-4xl mb-4">
+              {entity.name}
+            </h2>
+            <span className="inline-block text-gold/70 text-xs uppercase tracking-wider border border-gold/20 px-3 py-1 mb-5">
+              {entity.type}
+            </span>
+            <p className="text-gold italic mb-5">{entity.tagline}</p>
+            <p className="text-silver leading-relaxed mb-6">
+              {entity.description}
+            </p>
+            <div className="grid md:grid-cols-2 gap-6 text-sm mb-6">
+              <div>
+                <p className="text-gold/60 uppercase tracking-wider text-xs mb-2">
+                  Feeds Into
+                </p>
+                {entity.feeds.map((f) => (
+                  <p key={f} className="text-silver">
+                    → {f}
+                  </p>
+                ))}
+              </div>
+              <div>
+                <p className="text-gold/60 uppercase tracking-wider text-xs mb-2">
+                  Receives From
+                </p>
+                {entity.receives.map((r) => (
+                  <p key={r} className="text-silver">
+                    ← {r}
+                  </p>
+                ))}
+              </div>
+            </div>
+            <div className="pt-5 border-t border-gold/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <p className="text-ivory text-sm">
+                <span className="text-gold">Impact:</span> {entity.metric}
+              </p>
+              {entity.url && (
+                <a
+                  href={entity.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold text-sm uppercase tracking-wider hover:text-gold-light transition-colors gold-underline"
+                >
+                  Visit →
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Embedded page panel (planets + ecosystem a11y page) */}
+      {showEmbed && focused !== null && (
         <div
           className={`absolute inset-0 flex items-center justify-center p-4 md:p-8 transition-opacity duration-500 ${
             showPage ? "opacity-100" : "opacity-0 pointer-events-none"
