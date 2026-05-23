@@ -5,8 +5,8 @@ import dynamic from "next/dynamic";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { CameraControls } from "@react-three/drei";
 import * as THREE from "three";
-import SolarHub, { PAGES, ECO_INDEX, nodePosition } from "./SolarHub";
-import { ECOSYSTEM_ENTITIES } from "@/lib/ecosystem";
+import SolarHub, { PAGES, nodePosition } from "./SolarHub";
+import { PLANET_MOONS, hasMoons } from "@/lib/hubMoons";
 
 // Real page components, embedded directly (no iframe → no extra WebGL context,
 // no full-app reload, no navigation escape). Code-split per node.
@@ -42,7 +42,7 @@ export default function HubScene() {
   const focusPos = useRef(new THREE.Vector3());
   const [focused, setFocused] = useState<number | null>(null);
   const [moon, setMoon] = useState<number | null>(null);
-  const [ecoPage, setEcoPage] = useState(false); // ecosystem shown as full page (a11y path)
+  const [pageEmbed, setPageEmbed] = useState(false); // full page (a11y / no-moon planets)
   const [showPage, setShowPage] = useState(false);
   const [frameloop, setFrameloop] = useState<"always" | "never">("always");
 
@@ -72,61 +72,53 @@ export default function HubScene() {
     return () => window.clearInterval(id);
   }, []);
 
-  const frameEcosystem = useCallback((pos: THREE.Vector3) => {
+  const framePlanet = useCallback((pos: THREE.Vector3, dist: number, up: number) => {
     const dir = pos.clone().normalize();
     const cam = pos
       .clone()
-      .add(dir.multiplyScalar(4.8))
-      .add(new THREE.Vector3(0, 1.2, 0));
+      .add(dir.multiplyScalar(dist))
+      .add(new THREE.Vector3(0, up, 0));
     controls.current?.setLookAt(cam.x, cam.y, cam.z, pos.x, pos.y, pos.z, true);
   }, []);
+
+  const frameMoons = useCallback(
+    (pos: THREE.Vector3) => framePlanet(pos, 4.8, 1.2),
+    [framePlanet]
+  );
 
   const focus = useCallback(
     (i: number, pos: THREE.Vector3) => {
       setFocused(i);
       setMoon(null);
-      setEcoPage(false);
+      setPageEmbed(false);
       if (i === 0) {
         controls.current?.setLookAt(3.6, 1.7, 4.6, 0, 0, 0, true);
         window.setTimeout(() => setShowPage(true), 800);
-      } else if (i === ECO_INDEX) {
-        // Ecosystem → reveal moons (no page panel).
+      } else if (hasMoons(i)) {
         focusPos.current.copy(pos);
-        frameEcosystem(pos);
+        frameMoons(pos); // reveal moons, no panel
       } else {
-        const dir = pos.clone().normalize();
-        const cam = pos
-          .clone()
-          .add(dir.multiplyScalar(2.4))
-          .add(new THREE.Vector3(0, 0.7, 0));
-        controls.current?.setLookAt(cam.x, cam.y, cam.z, pos.x, pos.y, pos.z, true);
+        framePlanet(pos, 2.4, 0.7);
         window.setTimeout(() => setShowPage(true), 800);
       }
     },
-    [frameEcosystem]
+    [frameMoons, framePlanet]
   );
 
-  // Keyboard / screen-reader entry point: Ecosystem opens the full page
-  // (all entities, accessible); everything else behaves like a click.
+  // Keyboard / screen-reader entry: open the full page (accessible content).
   const openSection = useCallback(
     (i: number) => {
-      if (i === ECO_INDEX) {
-        setFocused(ECO_INDEX);
+      if (hasMoons(i)) {
+        setFocused(i);
         setMoon(null);
-        setEcoPage(true);
-        const pos = nodePosition(ECO_INDEX);
-        const dir = pos.clone().normalize();
-        const cam = pos
-          .clone()
-          .add(dir.multiplyScalar(2.6))
-          .add(new THREE.Vector3(0, 0.7, 0));
-        controls.current?.setLookAt(cam.x, cam.y, cam.z, pos.x, pos.y, pos.z, true);
+        setPageEmbed(true);
+        framePlanet(nodePosition(i), 2.6, 0.7);
         window.setTimeout(() => setShowPage(true), 800);
       } else {
         focus(i, nodePosition(i));
       }
     },
-    [focus]
+    [focus, framePlanet]
   );
 
   const focusMoon = useCallback(
@@ -149,23 +141,22 @@ export default function HubScene() {
 
   const back = useCallback(() => {
     if (moon !== null) {
-      // Moon → back to the moons view.
       setShowPage(false);
       setMoon(null);
-      frameEcosystem(focusPos.current);
+      frameMoons(focusPos.current);
     } else {
-      // Planet / star → back to orbit.
       setShowPage(false);
       setFocused(null);
-      setEcoPage(false);
+      setPageEmbed(false);
       controls.current?.setLookAt(...ORBIT_CAM, 0, 0, 0, true);
     }
-  }, [moon, frameEcosystem]);
+  }, [moon, frameMoons]);
 
-  const moonsMode = focused === ECO_INDEX && !ecoPage;
+  const moonsMode = focused !== null && hasMoons(focused) && !pageEmbed;
   const showEmbed =
-    focused !== null && focused !== 0 && (focused !== ECO_INDEX || ecoPage);
-  const entity = moon !== null ? ECOSYSTEM_ENTITIES[moon] : null;
+    focused !== null && focused !== 0 && (pageEmbed || !hasMoons(focused));
+  const moonData =
+    focused !== null && moon !== null ? PLANET_MOONS[focused]?.[moon] : null;
 
   return (
     <div className="fixed inset-0 z-30 bg-obsidian">
@@ -226,8 +217,8 @@ export default function HubScene() {
         </>
       )}
 
-      {/* Ecosystem moons mode — explore entities */}
-      {moonsMode && moon === null && (
+      {/* Moons mode — explore sub-sections */}
+      {moonsMode && moon === null && focused !== null && (
         <>
           <button
             data-hub-back
@@ -238,10 +229,10 @@ export default function HubScene() {
           </button>
           <div className="absolute bottom-7 left-1/2 -translate-x-1/2 text-center pointer-events-none">
             <p className="text-holo text-sm uppercase tracking-[0.3em]">
-              The Ecosystem
+              {PAGES[focused].name}
             </p>
             <p className="text-silver/70 text-xs uppercase tracking-[0.25em] mt-2">
-              Click a moon — each is an entity
+              Click a moon to explore
             </p>
           </div>
         </>
@@ -283,8 +274,8 @@ export default function HubScene() {
         </div>
       )}
 
-      {/* Moon (entity) detail panel */}
-      {moonsMode && entity && (
+      {/* Moon (sub-section) detail panel */}
+      {moonsMode && moonData && focused !== null && (
         <div
           className={`absolute inset-0 flex items-center justify-center p-4 md:p-8 transition-opacity duration-500 ${
             showPage ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -299,60 +290,78 @@ export default function HubScene() {
               ✕ Back to moons
             </button>
             <p className="text-holo text-xs uppercase tracking-[0.25em] mb-3">
-              Ecosystem · Entity {entity.num}
+              {moonData.kicker || PAGES[focused].name}
+              {moonData.num ? ` · ${moonData.num}` : ""}
             </p>
-            <h2 className="holo-text font-heading text-3xl md:text-4xl mb-4">
-              {entity.name}
+            <h2 className="holo-text font-heading text-3xl md:text-4xl mb-3">
+              {moonData.title}
             </h2>
-            <span className="inline-block text-gold/70 text-xs uppercase tracking-wider border border-gold/20 px-3 py-1 mb-5">
-              {entity.type}
-            </span>
-            <p className="text-gold italic mb-5">{entity.tagline}</p>
+            {moonData.type && (
+              <span className="inline-block text-gold/70 text-xs uppercase tracking-wider border border-gold/20 px-3 py-1 mb-4">
+                {moonData.type}
+              </span>
+            )}
+            {moonData.meta && (
+              <p className="text-silver/60 text-xs mb-4">{moonData.meta}</p>
+            )}
+            {moonData.tagline && (
+              <p className="text-gold italic mb-5">{moonData.tagline}</p>
+            )}
             <p className="text-silver leading-relaxed mb-6">
-              {entity.description}
+              {moonData.description}
             </p>
-            <div className="grid md:grid-cols-2 gap-6 text-sm mb-6">
-              <div>
-                <p className="text-gold/60 uppercase tracking-wider text-xs mb-2">
-                  Feeds Into
-                </p>
-                {entity.feeds.map((f) => (
-                  <p key={f} className="text-silver">
-                    → {f}
-                  </p>
+            {moonData.bullets && (
+              <ul className="space-y-2 mb-6">
+                {moonData.bullets.map((b) => (
+                  <li key={b} className="text-silver text-sm flex gap-2">
+                    <span className="text-gold shrink-0">›</span>
+                    <span>{b}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {moonData.pairs && (
+              <div className="grid md:grid-cols-2 gap-6 text-sm mb-6">
+                {moonData.pairs.map((pair) => (
+                  <div key={pair.label}>
+                    <p className="text-gold/60 uppercase tracking-wider text-xs mb-2">
+                      {pair.label}
+                    </p>
+                    {pair.items.map((it) => (
+                      <p key={it} className="text-silver">
+                        › {it}
+                      </p>
+                    ))}
+                  </div>
                 ))}
               </div>
-              <div>
-                <p className="text-gold/60 uppercase tracking-wider text-xs mb-2">
-                  Receives From
-                </p>
-                {entity.receives.map((r) => (
-                  <p key={r} className="text-silver">
-                    ← {r}
+            )}
+            {(moonData.metric || moonData.url) && (
+              <div className="pt-5 border-t border-gold/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                {moonData.metric ? (
+                  <p className="text-ivory text-sm">
+                    <span className="text-gold">Impact:</span> {moonData.metric}
                   </p>
-                ))}
+                ) : (
+                  <span />
+                )}
+                {moonData.url && (
+                  <a
+                    href={moonData.url}
+                    target={moonData.url.startsWith("http") ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    className="text-gold text-sm uppercase tracking-wider hover:text-gold-light transition-colors gold-underline shrink-0"
+                  >
+                    {moonData.urlLabel || "Open →"}
+                  </a>
+                )}
               </div>
-            </div>
-            <div className="pt-5 border-t border-gold/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <p className="text-ivory text-sm">
-                <span className="text-gold">Impact:</span> {entity.metric}
-              </p>
-              {entity.url && (
-                <a
-                  href={entity.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gold text-sm uppercase tracking-wider hover:text-gold-light transition-colors gold-underline"
-                >
-                  Visit →
-                </a>
-              )}
-            </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* Embedded page panel (planets + ecosystem a11y page) */}
+      {/* Embedded full page (planets without moons + a11y page view) */}
       {showEmbed && focused !== null && (
         <div
           className={`absolute inset-0 flex items-center justify-center p-4 md:p-8 transition-opacity duration-500 ${

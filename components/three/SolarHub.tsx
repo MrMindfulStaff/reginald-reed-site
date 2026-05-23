@@ -5,10 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { Html, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import StarField from "./StarField";
-import { ECOSYSTEM_ENTITIES } from "@/lib/ecosystem";
-
-/** PAGES index of the Ecosystem planet (the one with moons). */
-export const ECO_INDEX = 3;
+import { PLANET_MOONS, type MoonContent } from "@/lib/hubMoons";
 
 export interface HubPage {
   name: string;
@@ -51,21 +48,33 @@ const PLANETS: PlanetDef[] = [
 
 const STAR_RADIUS = 1.6;
 
-/* ---- Ecosystem moons (one per entity) ---- */
+/* ---- Moons (generated per planet from PLANET_MOONS) ---- */
 const MOON_COLORS = [
   "#C8A35F", "#5fb8a8", "#4FD8E8", "#d9b08c", "#9f86c0", "#7f9fd0", "#F5F0E8",
 ];
-const MOONS = ECOSYSTEM_ENTITIES.map((e, i) => ({
-  idx: i,
-  short: e.short,
-  radius: 1.05 + i * 0.26,
-  size: 0.07,
-  speed: 0.5 - i * 0.045,
-  tilt: (i % 2 === 0 ? 1 : -1) * (0.18 + i * 0.04),
-  phase: (i / ECOSYSTEM_ENTITIES.length) * Math.PI * 2,
-  color: MOON_COLORS[i % MOON_COLORS.length],
-}));
-type MoonDef = (typeof MOONS)[number];
+interface MoonOrbit {
+  idx: number;
+  short: string;
+  radius: number;
+  size: number;
+  speed: number;
+  tilt: number;
+  phase: number;
+  color: string;
+}
+function buildMoons(moons: MoonContent[]): MoonOrbit[] {
+  const n = moons.length;
+  return moons.map((m, i) => ({
+    idx: i,
+    short: m.short,
+    radius: 1.05 + i * 0.26,
+    size: 0.07,
+    speed: 0.5 - i * 0.04,
+    tilt: (i % 2 === 0 ? 1 : -1) * (0.18 + i * 0.035),
+    phase: (i / n) * Math.PI * 2,
+    color: MOON_COLORS[i % MOON_COLORS.length],
+  }));
+}
 
 /** Nominal world position of a node (for keyboard-triggered focus). */
 export function nodePosition(idx: number): THREE.Vector3 {
@@ -352,7 +361,7 @@ function Moon({
   active,
   onPick,
 }: {
-  m: MoonDef;
+  m: MoonOrbit;
   frozen: boolean;
   active: boolean;
   onPick: (idx: number, worldPos: THREE.Vector3) => void;
@@ -461,6 +470,11 @@ function Planet({
   const map = useTexture(p.texture);
   map.colorSpace = THREE.SRGBColorSpace;
 
+  const moons = useMemo(
+    () => (PLANET_MOONS[p.idx] ? buildMoons(PLANET_MOONS[p.idx]) : []),
+    [p.idx]
+  );
+
   useFrame((_, delta) => {
     if (!paused) angle.current += delta * p.speed;
     if (orbit.current) orbit.current.rotation.y = angle.current;
@@ -530,10 +544,9 @@ function Planet({
             </mesh>
           )}
 
-          {/* Ecosystem moons (one per entity), revealed when the planet is focused */}
-          {p.idx === ECO_INDEX &&
-            revealed &&
-            MOONS.map((m) => (
+          {/* Moons (sub-sections), revealed when this planet is focused */}
+          {revealed &&
+            moons.map((m) => (
               <Moon
                 key={m.idx}
                 m={m}
@@ -607,7 +620,7 @@ export default function SolarHub({
             active={focused === p.idx}
             paused={paused}
             onFocus={onFocus}
-            revealed={p.idx === ECO_INDEX && moonsRevealed}
+            revealed={focused === p.idx && moonsRevealed}
             frozenMoons={moon !== null}
             activeMoon={moon}
             onFocusMoon={onFocusMoon}
