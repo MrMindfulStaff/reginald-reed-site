@@ -46,6 +46,20 @@ const PLANETS: PlanetDef[] = [
 
 const STAR_RADIUS = 1.6;
 
+/** Nominal world position of a node (for keyboard-triggered focus). */
+export function nodePosition(idx: number): THREE.Vector3 {
+  if (idx === 0) return new THREE.Vector3(0, 0, 0);
+  const p = PLANETS.find((x) => x.idx === idx);
+  if (!p) return new THREE.Vector3(0, 0, 0);
+  const v = new THREE.Vector3(
+    Math.cos(p.phase) * p.radius,
+    0,
+    Math.sin(p.phase) * p.radius
+  );
+  v.applyAxisAngle(new THREE.Vector3(1, 0, 0), p.tilt);
+  return v;
+}
+
 /* ---------------- Milky Way background ---------------- */
 
 function Background() {

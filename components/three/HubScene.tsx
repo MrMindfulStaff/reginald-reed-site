@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { CameraControls } from "@react-three/drei";
 import * as THREE from "three";
-import SolarHub, { PAGES } from "./SolarHub";
+import SolarHub, { PAGES, nodePosition } from "./SolarHub";
 
 // Real page components, embedded directly (no iframe → no extra WebGL context,
 // no full-app reload, no navigation escape). Code-split per node.
@@ -47,6 +47,13 @@ export default function HubScene() {
     return () => document.removeEventListener("visibilitychange", onVis);
   }, []);
 
+  // Move focus into the panel when it opens (keyboard / screen-reader users).
+  useEffect(() => {
+    if (showPage) {
+      (document.querySelector("[data-hub-back]") as HTMLElement | null)?.focus();
+    }
+  }, [showPage]);
+
   const focus = useCallback((i: number, pos: THREE.Vector3) => {
     setFocused(i);
     if (i === 0) {
@@ -68,6 +75,19 @@ export default function HubScene() {
 
   return (
     <div className="fixed inset-0 z-30 bg-obsidian">
+      {/* Accessible heading + section navigation for keyboard / screen readers.
+          Visually hidden; activates the same zoom-into-page flow. */}
+      <h1 className="sr-only">
+        Reginald Reed Jr. — interactive solar-system navigation
+      </h1>
+      <nav aria-label="Site sections" className="sr-only">
+        {PAGES.map((p, i) => (
+          <button key={p.name} onClick={() => focus(i, nodePosition(i))}>
+            {i === 0 ? `${p.name} (introduction)` : p.name}
+          </button>
+        ))}
+      </nav>
+
       {/* Decorative 3D canvas — hidden from assistive tech (content lives in the
           panels + the standard nav + the SSR fallback page). */}
       <div aria-hidden="true" className="absolute inset-0">
@@ -110,6 +130,7 @@ export default function HubScene() {
           <div className="holo-glass holo-corners relative max-w-xl w-full p-10 md:p-14 text-center rounded-sm">
             <button
               onClick={back}
+              data-hub-back
               className="absolute top-3 right-3 z-10 px-4 py-2 bg-obsidian/80 border border-gold/50 text-gold text-xs uppercase tracking-wider hover:bg-gold hover:text-obsidian transition-colors cursor-pointer"
             >
               ✕ Back to orbit
@@ -145,6 +166,7 @@ export default function HubScene() {
           <div className="holo-glass holo-corners relative w-full max-w-5xl h-[86vh] overflow-hidden rounded-sm">
             <button
               onClick={back}
+              data-hub-back
               className="absolute top-3 right-3 z-10 px-4 py-2 bg-obsidian/80 border border-gold/50 text-gold text-xs uppercase tracking-wider hover:bg-gold hover:text-obsidian transition-colors cursor-pointer"
             >
               ✕ Back to orbit
