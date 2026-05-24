@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { CameraControls } from "@react-three/drei";
+import { CameraControls, useProgress } from "@react-three/drei";
 import * as THREE from "three";
 import SolarHub, { PAGES, nodePosition } from "./SolarHub";
 import { PLANET_MOONS, hasMoons } from "@/lib/hubMoons";
@@ -20,6 +20,7 @@ const EMBEDDED: Record<string, React.ComponentType> = {
 };
 
 const ORBIT_CAM: [number, number, number] = [0, 6, 20];
+const INTRO_CAM: [number, number, number] = [0, 22, 95]; // far start for the fly-in
 
 /** Gentle auto-orbit of the camera while nothing is focused. */
 function AutoOrbit({
@@ -46,6 +47,12 @@ export default function HubScene() {
   const [showPage, setShowPage] = useState(false);
   const [frameloop, setFrameloop] = useState<"always" | "never">("always");
 
+  // Preloader + cinematic intro
+  const { progress, active } = useProgress();
+  const sawActive = useRef(false);
+  const introStarted = useRef(false);
+  const [phase, setPhase] = useState<"loading" | "intro" | "ready">("loading");
+
   // Pause rendering when the tab is hidden (perf / battery).
   useEffect(() => {
     const onVis = () => setFrameloop(document.hidden ? "never" : "always");
@@ -71,6 +78,44 @@ export default function HubScene() {
     }, 60);
     return () => window.clearInterval(id);
   }, []);
+
+  // Cinematic fly-in from deep space, fired once assets are loaded.
+  const startIntro = useCallback(() => {
+    if (introStarted.current) return;
+    introStarted.current = true;
+    setPhase("intro");
+    const c = controls.current;
+    if (c) {
+      c.enabled = false;
+      c.smoothTime = 1.8;
+      c.setLookAt(...ORBIT_CAM, 0, 0, 0, true);
+      window.setTimeout(() => {
+        const cc = controls.current;
+        if (cc) {
+          cc.smoothTime = 0.55;
+          cc.maxDistance = 42;
+          cc.enabled = true;
+        }
+        setPhase("ready");
+      }, 3000);
+    } else {
+      setPhase("ready");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (active) sawActive.current = true;
+  }, [active]);
+
+  useEffect(() => {
+    if (phase === "loading" && sawActive.current && progress >= 100) startIntro();
+  }, [progress, active, phase, startIntro]);
+
+  // Failsafe so the preloader never gets stuck.
+  useEffect(() => {
+    const t = window.setTimeout(() => startIntro(), 8000);
+    return () => window.clearTimeout(t);
+  }, [startIntro]);
 
   const framePlanet = useCallback((pos: THREE.Vector3, dist: number, up: number) => {
     const dir = pos.clone().normalize();
@@ -159,8 +204,37 @@ export default function HubScene() {
     focused !== null && moon !== null ? PLANET_MOONS[focused]?.[moon] : null;
 
   return (
-    <div className="fixed inset-0 z-30 bg-obsidian">
-      {/* Accessible heading + section navigation for keyboard / screen readers. */}
+    <>
+      {/* Branded preloader (sibling of the hub so it sits above the nav) */}
+      {phase !== "ready" && (
+        <div
+          className={`fixed inset-0 z-[60] flex flex-col items-center justify-center bg-obsidian transition-opacity duration-700 ${
+            phase === "loading" ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          <p className="text-gold text-xs uppercase tracking-[0.4em] mb-6">
+            Milwaukee · 53206
+          </p>
+          <h1 className="holo-text font-heading text-4xl md:text-5xl mb-10">
+            Reginald Reed Jr.
+          </h1>
+          <div className="w-52 h-px bg-gold/20 overflow-hidden">
+            <div
+              className="h-full bg-gold"
+              style={{
+                width: `${Math.min(100, Math.round(progress))}%`,
+                transition: "width 0.2s",
+              }}
+            />
+          </div>
+          <p className="text-silver/50 text-[10px] uppercase tracking-[0.3em] mt-4">
+            Entering orbit · {Math.min(100, Math.round(progress))}%
+          </p>
+        </div>
+      )}
+
+      <div className="fixed inset-0 z-30 bg-obsidian">
+        {/* Accessible heading + section navigation for keyboard / screen readers. */}
       <h1 className="sr-only">
         Reginald Reed Jr. — interactive solar-system navigation
       </h1>
@@ -175,7 +249,7 @@ export default function HubScene() {
       {/* Decorative 3D canvas — hidden from assistive tech. */}
       <div aria-hidden="true" className="absolute inset-0">
         <Canvas
-          camera={{ position: ORBIT_CAM, fov: 50 }}
+          camera={{ position: INTRO_CAM, fov: 50 }}
           gl={{ antialias: true, powerPreference: "high-performance" }}
           dpr={[1, 1.5]}
           frameloop={frameloop}
@@ -191,8 +265,11 @@ export default function HubScene() {
               onFocusMoon={focusMoon}
             />
           </Suspense>
-          <CameraControls ref={controls} minDistance={0.6} maxDistance={42} />
-          <AutoOrbit controls={controls} active={focused !== null} />
+          <CameraControls ref={controls} minDistance={0.6} maxDistance={120} />
+          <AutoOrbit
+            controls={controls}
+            active={focused !== null || phase !== "ready"}
+          />
         </Canvas>
       </div>
 
@@ -388,6 +465,7 @@ export default function HubScene() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
