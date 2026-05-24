@@ -185,17 +185,24 @@ export default function HubScene() {
   );
 
   const back = useCallback(() => {
-    if (moon !== null) {
-      setShowPage(false);
-      setMoon(null);
-      frameMoons(focusPos.current);
-    } else {
-      setShowPage(false);
-      setFocused(null);
-      setPageEmbed(false);
-      controls.current?.setLookAt(...ORBIT_CAM, 0, 0, 0, true);
-    }
-  }, [moon, frameMoons]);
+    const wasMoon = moon !== null;
+    const animating = showPage; // a panel is currently visible
+    setShowPage(false);
+
+    // Camera moves immediately so the panel scales out as the camera pulls back.
+    if (wasMoon) frameMoons(focusPos.current);
+    else controls.current?.setLookAt(...ORBIT_CAM, 0, 0, 0, true);
+
+    const clear = () => {
+      if (wasMoon) setMoon(null);
+      else {
+        setFocused(null);
+        setPageEmbed(false);
+      }
+    };
+    if (animating) window.setTimeout(clear, 450);
+    else clear();
+  }, [moon, showPage, frameMoons]);
 
   const moonsMode = focused !== null && hasMoons(focused) && !pageEmbed;
   const showEmbed =
@@ -318,11 +325,20 @@ export default function HubScene() {
       {/* Star identity card */}
       {focused === 0 && (
         <div
-          className={`absolute inset-0 flex items-center justify-center p-6 transition-opacity duration-500 ${
-            showPage ? "opacity-100" : "opacity-0 pointer-events-none"
+          className={`absolute inset-0 flex items-center justify-center p-6 ${
+            showPage ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
-          <div className="holo-glass holo-corners relative max-w-xl w-full p-10 md:p-14 text-center rounded-sm">
+          <div
+            className={`absolute inset-0 bg-obsidian/50 transition-opacity duration-500 ${
+              showPage ? "opacity-100" : "opacity-0"
+            }`}
+          />
+          <div
+            className={`holo-glass holo-corners relative max-w-xl w-full p-10 md:p-14 text-center rounded-sm hub-panel ${
+              showPage ? "hub-panel-shown" : "hub-panel-hidden"
+            }`}
+          >
             <button
               onClick={back}
               data-hub-back
@@ -354,11 +370,20 @@ export default function HubScene() {
       {/* Moon (sub-section) detail panel */}
       {moonsMode && moonData && focused !== null && (
         <div
-          className={`absolute inset-0 flex items-center justify-center p-4 md:p-8 transition-opacity duration-500 ${
-            showPage ? "opacity-100" : "opacity-0 pointer-events-none"
+          className={`absolute inset-0 flex items-center justify-center p-4 md:p-8 ${
+            showPage ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
-          <div className="holo-glass holo-corners relative w-full max-w-3xl max-h-[86vh] overflow-y-auto p-8 md:p-12 rounded-sm">
+          <div
+            className={`absolute inset-0 bg-obsidian/50 transition-opacity duration-500 ${
+              showPage ? "opacity-100" : "opacity-0"
+            }`}
+          />
+          <div
+            className={`holo-glass holo-corners relative w-full max-w-3xl max-h-[86vh] overflow-y-auto p-8 md:p-12 rounded-sm hub-panel ${
+              showPage ? "hub-panel-shown" : "hub-panel-hidden"
+            }`}
+          >
             <button
               onClick={back}
               data-hub-back
@@ -441,11 +466,20 @@ export default function HubScene() {
       {/* Embedded full page (planets without moons + a11y page view) */}
       {showEmbed && focused !== null && (
         <div
-          className={`absolute inset-0 flex items-center justify-center p-4 md:p-8 transition-opacity duration-500 ${
-            showPage ? "opacity-100" : "opacity-0 pointer-events-none"
+          className={`absolute inset-0 flex items-center justify-center p-4 md:p-8 ${
+            showPage ? "pointer-events-auto" : "pointer-events-none"
           }`}
         >
-          <div className="holo-glass holo-corners relative w-full max-w-5xl h-[86vh] overflow-hidden rounded-sm">
+          <div
+            className={`absolute inset-0 bg-obsidian/50 transition-opacity duration-500 ${
+              showPage ? "opacity-100" : "opacity-0"
+            }`}
+          />
+          <div
+            className={`holo-glass holo-corners relative w-full max-w-5xl h-[86vh] overflow-hidden rounded-sm hub-panel ${
+              showPage ? "hub-panel-shown" : "hub-panel-hidden"
+            }`}
+          >
             <button
               onClick={back}
               data-hub-back
