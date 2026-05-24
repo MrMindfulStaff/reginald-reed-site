@@ -6,6 +6,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { CameraControls, useProgress } from "@react-three/drei";
 import * as THREE from "three";
 import SolarHub, { PAGES, nodePosition } from "./SolarHub";
+import CometCursor from "./CometCursor";
 import { PLANET_MOONS, hasMoons } from "@/lib/hubMoons";
 
 // Real page components, embedded directly (no iframe → no extra WebGL context,
@@ -209,6 +210,9 @@ export default function HubScene() {
     focused !== null && focused !== 0 && (pageEmbed || !hasMoons(focused));
   const moonData =
     focused !== null && moon !== null ? PLANET_MOONS[focused]?.[moon] : null;
+  // Comet cursor only over the 3D exploration (orbit + moons view), not panels.
+  const cometVisible =
+    phase === "ready" && focused !== 0 && moon === null && !showEmbed;
 
   return (
     <>
@@ -254,7 +258,11 @@ export default function HubScene() {
       </nav>
 
       {/* Decorative 3D canvas — hidden from assistive tech. */}
-      <div aria-hidden="true" className="absolute inset-0">
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{ cursor: cometVisible ? "none" : "auto" }}
+      >
         <Canvas
           camera={{ position: INTRO_CAM, fov: 50 }}
           gl={{ antialias: true, powerPreference: "high-performance" }}
@@ -500,6 +508,8 @@ export default function HubScene() {
         </div>
       )}
       </div>
+
+      <CometCursor visible={cometVisible} />
     </>
   );
 }
