@@ -7,6 +7,7 @@ import { CameraControls, useProgress } from "@react-three/drei";
 import * as THREE from "three";
 import SolarHub, { PAGES, nodePosition } from "./SolarHub";
 import CometCursor from "./CometCursor";
+import AmbientAudio from "./AmbientAudio";
 import { PLANET_MOONS, hasMoons } from "@/lib/hubMoons";
 
 // Real page components, embedded directly (no iframe → no extra WebGL context,
@@ -510,6 +511,7 @@ export default function HubScene() {
       </div>
 
       <CometCursor visible={cometVisible} />
+      {phase === "ready" && <AmbientAudio />}
     </>
   );
 }
