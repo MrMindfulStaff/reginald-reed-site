@@ -37,13 +37,15 @@ interface PlanetDef {
   atmosphere?: string;
 }
 
+// Custom Higgsfield-forged worlds — each planet is a one-of-one photoreal
+// world themed to what it represents (see /public/textures/worlds).
 const PLANETS: PlanetDef[] = [
-  { idx: 1, radius: 3.8, size: 0.42, speed: 0.24, tilt: 0.06, phase: 0.0, texture: "/textures/2k_earth_daymap.jpg", clouds: true, axial: 0.41, atmosphere: "#5fa8ff" },
-  { idx: 2, radius: 5.2, size: 0.34, speed: 0.18, tilt: 0.12, phase: 1.0, texture: "/textures/2k_mars.jpg", axial: 0.44 },
-  { idx: 3, radius: 6.8, size: 0.64, speed: 0.13, tilt: -0.08, phase: 2.1, texture: "/textures/2k_jupiter.jpg", axial: 0.05 },
-  { idx: 4, radius: 8.4, size: 0.46, speed: 0.1, tilt: 0.15, phase: 3.2, texture: "/textures/2k_neptune.jpg", axial: 0.49, atmosphere: "#4a7bd0" },
-  { idx: 5, radius: 10.0, size: 0.52, speed: 0.085, tilt: -0.13, phase: 4.3, texture: "/textures/2k_saturn.jpg", ring: true, axial: 0.47 },
-  { idx: 6, radius: 11.6, size: 0.44, speed: 0.07, tilt: 0.1, phase: 5.4, texture: "/textures/2k_uranus.jpg", axial: 1.71, atmosphere: "#a6e3e3" },
+  { idx: 1, radius: 3.8, size: 0.42, speed: 0.24, tilt: 0.06, phase: 0.0, texture: "/textures/worlds/overview.jpg", clouds: true, axial: 0.41, atmosphere: "#e8c98a" },
+  { idx: 2, radius: 5.2, size: 0.34, speed: 0.18, tilt: 0.12, phase: 1.0, texture: "/textures/worlds/about.jpg", axial: 0.44 },
+  { idx: 3, radius: 6.8, size: 0.64, speed: 0.13, tilt: -0.08, phase: 2.1, texture: "/textures/worlds/ecosystem.jpg", axial: 0.05 },
+  { idx: 4, radius: 8.4, size: 0.46, speed: 0.1, tilt: 0.15, phase: 3.2, texture: "/textures/worlds/research.jpg", axial: 0.49, atmosphere: "#4FD8E8" },
+  { idx: 5, radius: 10.0, size: 0.52, speed: 0.085, tilt: -0.13, phase: 4.3, texture: "/textures/worlds/media.jpg", ring: true, axial: 0.47 },
+  { idx: 6, radius: 11.6, size: 0.44, speed: 0.07, tilt: 0.1, phase: 5.4, texture: "/textures/worlds/insights.jpg", axial: 1.71, atmosphere: "#bfe8dd" },
 ];
 
 const STAR_RADIUS = 1.6;
@@ -93,7 +95,7 @@ export function nodePosition(idx: number): THREE.Vector3 {
 /* ---------------- Milky Way background ---------------- */
 
 function Background() {
-  const tex = useTexture("/textures/milkyway_hd.jpg");
+  const tex = useTexture("/textures/worlds/skybox.jpg");
   const { scene, gl } = useThree();
   useEffect(() => {
     tex.mapping = THREE.EquirectangularReflectionMapping;
@@ -101,7 +103,7 @@ function Background() {
     tex.anisotropy = gl.capabilities.getMaxAnisotropy();
     const prev = scene.background;
     scene.background = tex;
-    scene.backgroundIntensity = 0.6;
+    scene.backgroundIntensity = 0.22;
     return () => {
       scene.background = prev;
     };
@@ -468,8 +470,10 @@ function Planet({
   const tmp = useMemo(() => new THREE.Vector3(), []);
   const [hover, setHover] = useState(false);
 
+  const maxAniso = useThree((s) => s.gl.capabilities.getMaxAnisotropy());
   const map = useTexture(p.texture);
   map.colorSpace = THREE.SRGBColorSpace;
+  map.anisotropy = maxAniso;
 
   const moons = useMemo(
     () => (PLANET_MOONS[p.idx] ? buildMoons(PLANET_MOONS[p.idx]) : []),
@@ -515,7 +519,7 @@ function Planet({
           {/* axial-tilted planet */}
           <group ref={tiltGroup} rotation={[0, 0, p.axial]}>
             <mesh ref={body}>
-              <sphereGeometry args={[p.size, 48, 48]} />
+              <sphereGeometry args={[p.size, 96, 96]} />
               <meshStandardMaterial
                 map={map}
                 roughness={1}

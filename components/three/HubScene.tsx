@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { CameraControls, useProgress } from "@react-three/drei";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import SolarHub, { PAGES, nodePosition } from "./SolarHub";
 import CometCursor from "./CometCursor";
@@ -266,7 +267,11 @@ export default function HubScene() {
       >
         <Canvas
           camera={{ position: INTRO_CAM, fov: 50 }}
-          gl={{ antialias: true, powerPreference: "high-performance" }}
+          gl={{
+            antialias: true,
+            powerPreference: "high-performance",
+            preserveDrawingBuffer: true,
+          }}
           dpr={[1, 1.5]}
           frameloop={frameloop}
         >
@@ -286,6 +291,15 @@ export default function HubScene() {
             controls={controls}
             active={focused !== null || phase !== "ready"}
           />
+          {/* Cinematic glow: the sun, city-light veins and stars physically bloom */}
+          <EffectComposer>
+            <Bloom
+              mipmapBlur
+              intensity={0.55}
+              luminanceThreshold={0.85}
+              luminanceSmoothing={0.35}
+            />
+          </EffectComposer>
         </Canvas>
       </div>
 
@@ -305,7 +319,7 @@ export default function HubScene() {
             Drag to rotate · Click the star or a planet
           </div>
           <div className="absolute bottom-2 right-3 text-silver/30 text-[10px] tracking-wide pointer-events-none text-right">
-            Milky Way: ESO/S. Brunier · Planet textures: Solar System Scope · CC BY 4.0
+            Worlds forged for House Reed — no two exist anywhere else
           </div>
         </>
       )}
